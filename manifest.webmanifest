@@ -1,0 +1,19 @@
+{
+  "name": "Alana & Cian",
+  "short_name": "A&C",
+  "description": "Private memories, notes, dreams, and milestones for a couple.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#0b1020",
+  "theme_color": "#0b1020",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

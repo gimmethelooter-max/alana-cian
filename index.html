@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta name="description" content="A private space for Alana and Cian to share memories, notes, dreams, and milestones." />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Alana & Cian" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" type="image/svg+xml" href="icons/icon.svg" />
+    <link rel="apple-touch-icon" href="icons/icon.svg" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Alana & Cian</title>
+  </head>
+  <body>
+    <div id="app">
+      <div id="install-banner" class="install-banner hidden" aria-live="polite">
+        <span>Add Alana &amp; Cian to your home screen</span>
+        <button id="install-btn" class="install-btn" type="button">Install</button>
+        <button id="dismiss-install" class="dismiss-btn" type="button" aria-label="Dismiss install banner">×</button>
+      </div>
+
+      <nav id="main-nav" class="main-nav" aria-label="Main navigation">
+        <button class="nav-item active" data-page="home" type="button">
+          <span class="nav-icon">⌂</span>
+          <span class="nav-label">Home</span>
+        </button>
+        <button class="nav-item" data-page="story" type="button">
+          <span class="nav-icon">✦</span>
+          <span class="nav-label">Our Story</span>
+        </button>
+        <button class="nav-item" data-page="memories" type="button">
+          <span class="nav-icon">✦</span>
+          <span class="nav-label">Memories</span>
+        </button>
+        <button class="nav-item" data-page="notes" type="button">
+          <span class="nav-icon">✉</span>
+          <span class="nav-label">Notes</span>
+        </button>
+        <button class="nav-item" data-page="future" type="button">
+          <span class="nav-icon">✧</span>
+          <span class="nav-label">Future</span>
+        </button>
+      </nav>
+
+      <main id="pages-container">
+        <section id="page-home" class="page active">
+          <div class="home-hero">
+            <div class="hero-glow"></div>
+            <div class="hero-content">
+              <h1 class="hero-title">Alana <span class="ampersand">&amp;</span> Cian</h1>
+              <p class="hero-tagline">Our story. Our life. Our next chapter.</p>
+              <div class="hero-subtle">You feel like home.</div>
+            </div>
+          </div>
+
+          <div class="home-grid">
+            <a href="#" class="home-card" data-nav="story">
+              <div class="card-glow"></div>
+              <div class="card-content">
+                <span class="card-icon">✦</span>
+                <h3>Our Story</h3>
+                <p>The timeline of us</p>
+              </div>
+            </a>
+            <a href="#" class="home-card" data-nav="memories">
+              <div class="card-glow"></div>
+              <div class="card-content">
+                <span class="card-icon">✦</span>
+                <h3>Memories</h3>
+                <p>Moments we've shared</p>
+              </div>
+            </a>
+            <a href="#" class="home-card" data-nav="notes">
+              <div class="card-glow"></div>
+              <div class="card-content">
+                <span class="card-icon">✉</span>
+                <h3>Love Notes</h3>
+                <p>Words between us</p>
+              </div>
+            </a>
+            <a href="#" class="home-card" data-nav="future">
+              <div class="card-glow"></div>
+              <div class="card-content">
+                <span class="card-icon">✧</span>
+                <h3>Our Future</h3>
+                <p>What comes next</p>
+              </div>
+            </a>
+            <a href="#" class="home-card" data-nav="experiences">
+              <div class="card-glow"></div>
+              <div class="card-content">
+                <span class="card-icon">◈</span>
+                <h3>Experiences</h3>
+                <p>Things to do together</p>
+              </div>
+            </a>
+            <a href="#" class="home-card" data-nav="milestones">
+              <div class="card-glow"></div>
+              <div class="card-content">
+                <span class="card-icon">◉</span>
+                <h3>Milestones</h3>
+                <p>Important moments</p>
+              </div>
+            </a>
+          </div>
+
+          <div class="home-quote"><p>"Here's to the rest of our story."</p></div>
+        </section>
+
+        <section id="page-story" class="page">
+          <header class="page-header">
+            <h2>Our Story</h2>
+            <p class="page-subtitle">Fifteen years. One journey. Still writing.</p>
+          </header>
+          <div id="story-timeline" class="story-timeline"></div>
+        </section>
+
+        <section id="page-memories" class="page">
+          <header class="page-header">
+            <h2>Memories</h2>
+            <p class="page-subtitle">Our private collection</p>
+          </header>
+          <div class="filter-bar">
+            <button class="filter-btn active" data-filter="all" type="button">All</button>
+            <button class="filter-btn" data-filter="photos" type="button">Photos</button>
+            <button class="filter-btn" data-filter="dates" type="button">Dates</button>
+            <button class="filter-btn" data-filter="family" type="button">Family</button>
+            <button class="filter-btn" data-filter="adventures" type="button">Adventures</button>
+          </div>
+          <div id="memories-grid" class="memories-grid"></div>
+        </section>
+
+        <section id="page-notes" class="page">
+          <header class="page-header">
+            <h2>Love Notes</h2>
+            <p class="page-subtitle">Words meant only for each other</p>
+          </header>
+          <div class="notes-compose">
+            <button class="btn-compose" type="button" data-action="add-note">
+              <span>Write a note</span>
+            </button>
+          </div>
+          <div id="notes-list" class="notes-list"></div>
+        </section>
+
+        <section id="page-future" class="page">
+          <header class="page-header">
+            <h2>Our Future</h2>
+            <p class="page-subtitle">What we're building together</p>
+          </header>
+          <div class="future-categories">
+            <button class="category-btn active" data-category="all" type="button">All</button>
+            <button class="category-btn" data-category="places" type="button">Places</button>
+            <button class="category-btn" data-category="experiences" type="button">Experiences</button>
+            <button class="category-btn" data-category="dreams" type="button">Dreams</button>
+            <button class="category-btn" data-category="home" type="button">Home</button>
+          </div>
+          <div id="future-list" class="future-list"></div>
+        </section>
+
+        <section id="page-experiences" class="page">
+          <header class="page-header">
+            <h2>Experiences</h2>
+            <p class="page-subtitle">Ideas for us</p>
+          </header>
+          <div class="experience-tabs">
+            <button class="tab-btn active" data-tab="want" type="button">Want to Do</button>
+            <button class="tab-btn" data-tab="planned" type="button">Planned</button>
+            <button class="tab-btn" data-tab="done" type="button">Done</button>
+          </div>
+          <div id="experiences-list" class="experiences-list"></div>
+        </section>
+
+        <section id="page-milestones" class="page">
+          <header class="page-header">
+            <h2>Milestones</h2>
+            <p class="page-subtitle">The moments that matter</p>
+          </header>
+          <div id="milestones-list" class="milestones-list"></div>
+        </section>
+
+        <section id="page-settings" class="page">
+          <header class="page-header">
+            <h2>Settings</h2>
+          </header>
+          <div class="settings-section">
+            <h3>Our Profile</h3>
+            <div class="profile-edit">
+              <div class="profile-field">
+                <label>Partner 1 Name</label>
+                <input type="text" id="partner1-name" value="Alana" />
+              </div>
+              <div class="profile-field">
+                <label>Partner 2 Name</label>
+                <input type="text" id="partner2-name" value="Cian" />
+              </div>
+              <div class="profile-field">
+                <label>Together Since</label>
+                <input type="date" id="relationship-start" value="" />
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <h3>Data</h3>
+            <button class="btn-secondary" id="export-data" type="button">Export Our Data</button>
+            <button class="btn-secondary" id="import-data" type="button">Import Data</button>
+            <input type="file" id="import-file" accept=".json" hidden />
+          </div>
+
+          <div class="settings-section">
+            <button class="btn-danger" id="reset-data" type="button">Reset All Data</button>
+          </div>
+        </section>
+      </main>
+
+      <div id="modal" class="modal hidden" aria-hidden="true">
+        <div class="modal-overlay" data-close="modal"></div>
+        <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+          <button class="modal-close" type="button" aria-label="Close modal">×</button>
+          <div id="modal-body"></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
