@@ -1,12 +1,12 @@
 {
-  "name": "Alana & Cian",
+  "name": "Alana & Cian Family Memory Book",
   "short_name": "A&C",
-  "description": "Private memories, notes, dreams, and milestones for a couple.",
+  "description": "Private memories, notes, dreams, and milestones for our family.",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",
-  "background_color": "#0b1020",
-  "theme_color": "#0b1020",
+  "background_color": "#f8f4ee",
+  "theme_color": "#f8f4ee",
   "orientation": "portrait",
   "icons": [
     {

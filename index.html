@@ -3,16 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#0f172a" />
-    <meta name="description" content="A private space for Alana and Cian to share memories, notes, dreams, and milestones." />
+    <meta name="theme-color" content="#f8f4ee" />
+    <meta name="description" content="A private family memory book for Alana and Cian, with our story, memories, diary, and future plans." />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="Alana & Cian" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="A&C Family Book" />
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="icon" type="image/svg+xml" href="icons/icon.svg" />
     <link rel="apple-touch-icon" href="icons/icon.svg" />
     <link rel="stylesheet" href="styles.css" />
-    <title>Alana & Cian</title>
+    <title>Alana & Cian Family Memory Book</title>
   </head>
   <body>
     <div id="app">
@@ -31,17 +31,29 @@
           <span class="nav-icon">✦</span>
           <span class="nav-label">Our Story</span>
         </button>
+        <button class="nav-item" data-page="timeline" type="button">
+          <span class="nav-icon">▣</span>
+          <span class="nav-label">Timeline</span>
+        </button>
         <button class="nav-item" data-page="memories" type="button">
-          <span class="nav-icon">✦</span>
+          <span class="nav-icon">◌</span>
           <span class="nav-label">Memories</span>
         </button>
-        <button class="nav-item" data-page="notes" type="button">
+        <button class="nav-item" data-page="diary" type="button">
+          <span class="nav-icon">✎</span>
+          <span class="nav-label">Diary</span>
+        </button>
+        <button class="nav-item" data-page="letters" type="button">
           <span class="nav-icon">✉</span>
-          <span class="nav-label">Notes</span>
+          <span class="nav-label">Letters</span>
         </button>
         <button class="nav-item" data-page="future" type="button">
           <span class="nav-icon">✧</span>
           <span class="nav-label">Future</span>
+        </button>
+        <button class="nav-item" data-page="settings" type="button">
+          <span class="nav-icon">⚙</span>
+          <span class="nav-label">Settings</span>
         </button>
       </nav>
 
@@ -50,78 +62,167 @@
           <div class="home-hero">
             <div class="hero-glow"></div>
             <div class="hero-content">
+              <p class="eyebrow">Our family memory book</p>
               <h1 class="hero-title">Alana <span class="ampersand">&amp;</span> Cian</h1>
-              <p class="hero-tagline">Our story. Our life. Our next chapter.</p>
-              <div class="hero-subtle">You feel like home.</div>
+              <p class="hero-tagline">Our story. Our life. Our next chapter together.</p>
+              <div class="hero-subtle">A place for love, family, and every beautiful moment.</div>
             </div>
           </div>
 
+          <div class="countdown-panel" aria-live="polite">
+            <div class="countdown-header">
+              <span class="eyebrow">Planned arrival</span>
+              <h2>Jack &amp; Max</h2>
+            </div>
+            <div class="countdown-grid">
+              <div class="countdown-box">
+                <span id="countdown-days" class="countdown-value">--</span>
+                <span class="countdown-label">Days</span>
+              </div>
+              <div class="countdown-box">
+                <span id="countdown-weeks" class="countdown-value">--</span>
+                <span class="countdown-label">Weeks</span>
+              </div>
+              <div class="countdown-box countdown-box-wide">
+                <span id="countdown-extra-days" class="countdown-value">--</span>
+                <span class="countdown-label">And days</span>
+              </div>
+            </div>
+            <p id="countdown-message" class="countdown-message">
+              We are preparing to welcome Jack and Max.
+            </p>
+            <p class="countdown-note">
+              This is our planned arrival date estimate for 3 February 2027. Their actual arrival may differ.
+            </p>
+          </div>
+
           <div class="home-grid">
-            <a href="#" class="home-card" data-nav="story">
+            <button type="button" class="home-card" data-nav="story">
               <div class="card-glow"></div>
               <div class="card-content">
                 <span class="card-icon">✦</span>
                 <h3>Our Story</h3>
                 <p>The timeline of us</p>
               </div>
-            </a>
-            <a href="#" class="home-card" data-nav="memories">
+            </button>
+            <button type="button" class="home-card" data-nav="timeline">
+              <div class="card-glow"></div>
+              <div class="card-content">
+                <span class="card-icon">▣</span>
+                <h3>Family Timeline</h3>
+                <p>Moments, dates &amp; milestones</p>
+              </div>
+            </button>
+            <button type="button" class="home-card" data-nav="memories">
               <div class="card-glow"></div>
               <div class="card-content">
                 <span class="card-icon">✦</span>
                 <h3>Memories</h3>
-                <p>Moments we've shared</p>
+                <p>Moments we cherish</p>
               </div>
-            </a>
-            <a href="#" class="home-card" data-nav="notes">
+            </button>
+            <button type="button" class="home-card" data-nav="gallery">
+              <div class="card-glow"></div>
+              <div class="card-content">
+                <span class="card-icon">◌</span>
+                <h3>Photo Gallery</h3>
+                <p>Albums, captions &amp; favourites</p>
+              </div>
+            </button>
+            <button type="button" class="home-card" data-nav="voice">
+              <div class="card-glow"></div>
+              <div class="card-content">
+                <span class="card-icon">♫</span>
+                <h3>Voice Notes</h3>
+                <p>Record little moments</p>
+              </div>
+            </button>
+            <button type="button" class="home-card" data-nav="diary">
+              <div class="card-glow"></div>
+              <div class="card-content">
+                <span class="card-icon">✎</span>
+                <h3>Family Diary</h3>
+                <p>Daily updates &amp; reminders</p>
+              </div>
+            </button>
+            <button type="button" class="home-card" data-nav="pregnancy">
+              <div class="card-glow"></div>
+              <div class="card-content">
+                <span class="card-icon">❋</span>
+                <h3>Pregnancy Journey</h3>
+                <p>Milestones and preparation</p>
+              </div>
+            </button>
+            <button type="button" class="home-card" data-nav="letters">
               <div class="card-glow"></div>
               <div class="card-content">
                 <span class="card-icon">✉</span>
-                <h3>Love Notes</h3>
-                <p>Words between us</p>
+                <h3>Letters to Jack &amp; Max</h3>
+                <p>Words for our boys</p>
               </div>
-            </a>
-            <a href="#" class="home-card" data-nav="future">
+            </button>
+            <button type="button" class="home-card" data-nav="future">
               <div class="card-glow"></div>
               <div class="card-content">
                 <span class="card-icon">✧</span>
                 <h3>Our Future</h3>
-                <p>What comes next</p>
+                <p>Dreams, plans &amp; hopes</p>
               </div>
-            </a>
-            <a href="#" class="home-card" data-nav="experiences">
-              <div class="card-glow"></div>
-              <div class="card-content">
-                <span class="card-icon">◈</span>
-                <h3>Experiences</h3>
-                <p>Things to do together</p>
-              </div>
-            </a>
-            <a href="#" class="home-card" data-nav="milestones">
+            </button>
+            <button type="button" class="home-card" data-nav="milestones">
               <div class="card-glow"></div>
               <div class="card-content">
                 <span class="card-icon">◉</span>
-                <h3>Milestones</h3>
-                <p>Important moments</p>
+                <h3>Family Milestones</h3>
+                <p>Big and small moments</p>
               </div>
-            </a>
+            </button>
+            <button type="button" class="home-card" data-nav="inspiration">
+              <div class="card-glow"></div>
+              <div class="card-content">
+                <span class="card-icon">☼</span>
+                <h3>Daily Inspiration</h3>
+                <p>Gentle reminders</p>
+              </div>
+            </button>
+            <button type="button" class="home-card" data-nav="settings">
+              <div class="card-glow"></div>
+              <div class="card-content">
+                <span class="card-icon">⚙</span>
+                <h3>Settings &amp; Backups</h3>
+                <p>Keep our memories safe</p>
+              </div>
+            </button>
           </div>
 
-          <div class="home-quote"><p>"Here's to the rest of our story."</p></div>
+          <div class="home-inspiration">
+            <div class="inspiration-label">Daily inspiration</div>
+            <p id="daily-inspiration-text">A warm home is made from quiet love, patience, and everyday togetherness.</p>
+          </div>
+
+          <div class="home-quote"><p>“Here’s to the rest of our story, and the life we are growing together.”</p></div>
         </section>
 
         <section id="page-story" class="page">
           <header class="page-header">
             <h2>Our Story</h2>
-            <p class="page-subtitle">Fifteen years. One journey. Still writing.</p>
+            <p class="page-subtitle">A life built one chapter at a time.</p>
           </header>
           <div id="story-timeline" class="story-timeline"></div>
+        </section>
+
+        <section id="page-timeline" class="page">
+          <header class="page-header">
+            <h2>Family Timeline</h2>
+            <p class="page-subtitle">Important dates, celebrations and tiny everyday moments worth keeping.</p>
+          </header>
+          <div id="timeline-list" class="story-timeline"></div>
         </section>
 
         <section id="page-memories" class="page">
           <header class="page-header">
             <h2>Memories</h2>
-            <p class="page-subtitle">Our private collection</p>
+            <p class="page-subtitle">The moments that live in our hearts.</p>
           </header>
           <div class="filter-bar">
             <button class="filter-btn active" data-filter="all" type="button">All</button>
@@ -133,10 +234,50 @@
           <div id="memories-grid" class="memories-grid"></div>
         </section>
 
+        <section id="page-gallery" class="page">
+          <header class="page-header">
+            <h2>Photo Gallery</h2>
+            <p class="page-subtitle">Our favourite moments, captured and remembered.</p>
+          </header>
+          <div id="gallery-grid" class="gallery-grid"></div>
+        </section>
+
+        <section id="page-voice" class="page">
+          <header class="page-header">
+            <h2>Voice Notes</h2>
+            <p class="page-subtitle">Recorded memories for our future selves.</p>
+          </header>
+          <div id="voice-notes-list" class="voice-notes-list"></div>
+        </section>
+
+        <section id="page-diary" class="page">
+          <header class="page-header">
+            <h2>Family Diary</h2>
+            <p class="page-subtitle">Daily updates, reminders, little moments and everyday life.</p>
+          </header>
+          <div id="diary-list" class="diary-list"></div>
+        </section>
+
+        <section id="page-pregnancy" class="page">
+          <header class="page-header">
+            <h2>Pregnancy Journey</h2>
+            <p class="page-subtitle">Our preparations, scans and hopeful waiting for Jack and Max.</p>
+          </header>
+          <div id="pregnancy-journey" class="pregnancy-list"></div>
+        </section>
+
+        <section id="page-letters" class="page">
+          <header class="page-header">
+            <h2>Letters to Jack &amp; Max</h2>
+            <p class="page-subtitle">Words we want them to know about love, family and home.</p>
+          </header>
+          <div id="letters-list" class="letters-list"></div>
+        </section>
+
         <section id="page-notes" class="page">
           <header class="page-header">
             <h2>Love Notes</h2>
-            <p class="page-subtitle">Words meant only for each other</p>
+            <p class="page-subtitle">Words meant only for each other.</p>
           </header>
           <div class="notes-compose">
             <button class="btn-compose" type="button" data-action="add-note">
@@ -149,7 +290,7 @@
         <section id="page-future" class="page">
           <header class="page-header">
             <h2>Our Future</h2>
-            <p class="page-subtitle">What we're building together</p>
+            <p class="page-subtitle">What we are building, dreaming and looking forward to.</p>
           </header>
           <div class="future-categories">
             <button class="category-btn active" data-category="all" type="button">All</button>
@@ -161,30 +302,26 @@
           <div id="future-list" class="future-list"></div>
         </section>
 
-        <section id="page-experiences" class="page">
+        <section id="page-inspiration" class="page">
           <header class="page-header">
-            <h2>Experiences</h2>
-            <p class="page-subtitle">Ideas for us</p>
+            <h2>Daily Inspiration</h2>
+            <p class="page-subtitle">Gentle thoughts to keep us rooted in love and gratitude.</p>
           </header>
-          <div class="experience-tabs">
-            <button class="tab-btn active" data-tab="want" type="button">Want to Do</button>
-            <button class="tab-btn" data-tab="planned" type="button">Planned</button>
-            <button class="tab-btn" data-tab="done" type="button">Done</button>
-          </div>
-          <div id="experiences-list" class="experiences-list"></div>
+          <div id="inspiration-list" class="inspiration-list"></div>
         </section>
 
         <section id="page-milestones" class="page">
           <header class="page-header">
-            <h2>Milestones</h2>
-            <p class="page-subtitle">The moments that matter</p>
+            <h2>Family Milestones</h2>
+            <p class="page-subtitle">The moments that matter.</p>
           </header>
           <div id="milestones-list" class="milestones-list"></div>
         </section>
 
         <section id="page-settings" class="page">
           <header class="page-header">
-            <h2>Settings</h2>
+            <h2>Settings &amp; Backups</h2>
+            <p class="page-subtitle">Keep our family data private, secure and easy to restore.</p>
           </header>
           <div class="settings-section">
             <h3>Our Profile</h3>
@@ -212,6 +349,8 @@
           </div>
 
           <div class="settings-section">
+            <h3>Privacy</h3>
+            <p class="settings-note">Cloud photos, recordings and shared family syncing require secure service configuration. This app is ready for that setup when credentials are added.</p>
             <button class="btn-danger" id="reset-data" type="button">Reset All Data</button>
           </div>
         </section>

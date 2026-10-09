@@ -1,4 +1,5 @@
 const STORAGE_KEY = 'alana-cian-marriage-app-v1';
+const PLANNED_ARRIVAL_DATE = '2027-02-03';
 
 const defaultState = {
   profile: {
@@ -11,15 +12,43 @@ const defaultState = {
     { id: crypto.randomUUID(), title: 'Our first trip', date: '2014-09-02', summary: 'A weekend away, a lot of laughter, and the realization that adventure was better together.' },
     { id: crypto.randomUUID(), title: 'The promise', date: '2024-05-19', summary: 'We chose each other, again and again, in the quiet ways that build a life.' }
   ],
+  timeline: [
+    { id: crypto.randomUUID(), title: 'First time we met', date: '2010-06-14', description: 'From the very first conversation, it felt like the beginning of something steady and true.' },
+    { id: crypto.randomUUID(), title: 'Our first trip', date: '2014-09-02', description: 'A weekend away, a lot of laughter, and the realization that adventure was better together.' },
+    { id: crypto.randomUUID(), title: 'We chose each other', date: '2024-05-19', description: 'We chose each other, again and again, in the quiet ways that build a life.' },
+    { id: crypto.randomUUID(), title: 'Planning for Jack and Max', date: '2026-10-09', description: 'Preparing our home and hearts for the twins we are waiting to meet.' }
+  ],
   memories: [
     { id: crypto.randomUUID(), title: 'Sunrise coffee', category: 'dates', date: '2025-02-14', description: 'Watching the city wake up while we talked about everything and nothing.' },
     { id: crypto.randomUUID(), title: 'Family dinner', category: 'family', date: '2025-04-08', description: 'Food, stories, and the kind of laughter that makes a room feel like home.' },
     { id: crypto.randomUUID(), title: 'Beach walk', category: 'adventures', date: '2025-06-12', description: 'The ocean breeze, the salty air, and your hand in mine the whole time.' },
     { id: crypto.randomUUID(), title: 'Photo book', category: 'photos', date: '2025-07-30', description: 'A stack of memories we keep returning to, page after page.' }
   ],
+  gallery: [
+    { id: crypto.randomUUID(), title: 'Our first home', date: '2025-01-21', caption: 'A place that began to feel like ours', accent: 'rose' },
+    { id: crypto.randomUUID(), title: 'Sunset walk', date: '2025-06-12', caption: 'The kind of evening we wish we could freeze', accent: 'sage' },
+    { id: crypto.randomUUID(), title: 'Waiting for Jack and Max', date: '2026-10-09', caption: 'A chapter full of wonder and quiet preparation', accent: 'blue' }
+  ],
+  voiceNotes: [
+    { id: crypto.randomUUID(), title: 'First heartbeat', date: '2026-08-17', description: 'A tiny moment we will never forget.' },
+    { id: crypto.randomUUID(), title: 'For the boys', date: '2026-09-02', description: 'A little message before they arrive.' }
+  ],
   notes: [
     { id: crypto.randomUUID(), title: 'A reminder', date: '2025-08-11', content: 'Loving you is easier than breathing sometimes. I hope you always feel how deeply I choose you.' },
     { id: crypto.randomUUID(), title: 'For later', date: '2025-09-02', content: 'When life gets loud, remember: home is whichever room we are in together.' }
+  ],
+  diary: [
+    { id: crypto.randomUUID(), title: 'Quiet morning', date: '2026-09-09', entry: 'A slow start, tea in the kitchen, and a simple feeling of gratitude for the life we are making together.' },
+    { id: crypto.randomUUID(), title: 'Twin prep', date: '2026-10-09', entry: 'We started sorting clothes, planning the nursery, and dreaming about the first time we hold them.' }
+  ],
+  pregnancy: [
+    { id: crypto.randomUUID(), title: 'First scan check-in', date: '2026-07-14', description: 'A careful and reassuring milestone as we learned more about their tiny beginnings.' },
+    { id: crypto.randomUUID(), title: 'Preparing the nursery', date: '2026-09-17', description: 'Making room, choosing colours, and imagining the quiet rhythm of home with them in it.' },
+    { id: crypto.randomUUID(), title: 'Planned arrival note', date: '2027-02-03', description: 'Our planned arrival date for Jack and Max is 3 February 2027. Their actual arrival may differ.' }
+  ],
+  letters: [
+    { id: crypto.randomUUID(), title: 'To our boys', date: '2026-10-09', content: 'We are waiting for you with so much love. We cannot wait to meet you and show you the world we are building together.' },
+    { id: crypto.randomUUID(), title: 'A little promise', date: '2026-11-01', content: 'No matter how life changes, you will always be loved, cherished, and welcomed home.' }
   ],
   future: [
     { id: crypto.randomUUID(), title: 'Sunset in Santorini', category: 'places', date: '2026-06-20', description: 'Wandering streets, drinking wine, and watching the sky turn gold.' },
@@ -40,7 +69,15 @@ const defaultState = {
   },
   milestones: [
     { id: crypto.randomUUID(), title: 'Moved into our first home', date: '2025-01-21', description: 'The room finally felt like ours when we filled it with our own rhythm.' },
-    { id: crypto.randomUUID(), title: 'Celebrated 15 years', date: '2025-07-27', description: 'Every chapter has been beautiful in its own way.' }
+    { id: crypto.randomUUID(), title: 'Celebrated 15 years', date: '2025-07-27', description: 'Every chapter has been beautiful in its own way.' },
+    { id: crypto.randomUUID(), title: 'Waiting for twins', date: '2026-10-09', description: 'A beginning we are holding gently and with so much hope.' }
+  ],
+  inspiration: [
+    'A warm home is made from quiet love, patience, and everyday togetherness.',
+    'We are growing a life rooted in tenderness, laughter, and steady faith in each other.',
+    'Some of the most beautiful memories are made in the ordinary moments we almost overlook.',
+    'Love is not only the big milestones—it is the soft rituals that make a family feel like home.',
+    'We are learning every day that love grows strongest in the gentlest, truest moments.'
   ]
 };
 
@@ -54,10 +91,16 @@ let deferredPrompt = null;
 const pages = {
   home: document.getElementById('page-home'),
   story: document.getElementById('page-story'),
+  timeline: document.getElementById('page-timeline'),
   memories: document.getElementById('page-memories'),
+  gallery: document.getElementById('page-gallery'),
+  voice: document.getElementById('page-voice'),
+  diary: document.getElementById('page-diary'),
+  pregnancy: document.getElementById('page-pregnancy'),
+  letters: document.getElementById('page-letters'),
   notes: document.getElementById('page-notes'),
   future: document.getElementById('page-future'),
-  experiences: document.getElementById('page-experiences'),
+  inspiration: document.getElementById('page-inspiration'),
   milestones: document.getElementById('page-milestones'),
   settings: document.getElementById('page-settings')
 };
@@ -66,10 +109,13 @@ document.addEventListener('DOMContentLoaded', () => {
   bindStaticEvents();
   hydrateProfileFields();
   renderAll();
+  renderCountdown();
+  renderHomeDailyInspiration();
   registerServiceWorker();
   bindInstallBanner();
   bindFileImport();
   bindSettingsActions();
+  setInterval(renderCountdown, 60000);
 });
 
 function bindStaticEvents() {
@@ -78,9 +124,11 @@ function bindStaticEvents() {
   });
 
   document.querySelectorAll('.home-card[data-nav]').forEach((card) => {
-    card.addEventListener('click', (event) => {
-      event.preventDefault();
-      showPage(card.dataset.nav);
+    card.addEventListener('click', () => {
+      const target = card.dataset.nav;
+      if (target && pages[target]) {
+        showPage(target);
+      }
     });
   });
 
@@ -155,11 +203,18 @@ function mergeDeep(base, incoming) {
 
 function renderAll() {
   renderStory();
+  renderTimeline();
   renderMemories();
+  renderGallery();
+  renderVoiceNotes();
+  renderDiary();
+  renderPregnancyJourney();
+  renderLetters();
   renderNotes();
   renderFuture();
   renderExperiences();
   renderMilestones();
+  renderInspiration();
   renderProfilePreview();
   updateEmptyActionButtons();
 }
@@ -167,7 +222,9 @@ function renderAll() {
 function showPage(page) {
   currentPage = page;
   Object.entries(pages).forEach(([key, section]) => {
-    section.classList.toggle('active', key === page);
+    if (section) {
+      section.classList.toggle('active', key === page);
+    }
   });
 
   document.querySelectorAll('.nav-item').forEach((button) => {
@@ -179,8 +236,51 @@ function showPage(page) {
   }
 }
 
+function renderCountdown() {
+  const daysValue = document.getElementById('countdown-days');
+  const weeksValue = document.getElementById('countdown-weeks');
+  const extraDaysValue = document.getElementById('countdown-extra-days');
+  const message = document.getElementById('countdown-message');
+
+  if (!daysValue || !weeksValue || !extraDaysValue || !message) return;
+
+  const plannedDate = new Date(`${PLANNED_ARRIVAL_DATE}T00:00:00`);
+  const now = new Date();
+  const diffMs = plannedDate.getTime() - now.getTime();
+
+  if (diffMs <= 0) {
+    daysValue.textContent = '0';
+    weeksValue.textContent = '0';
+    extraDaysValue.textContent = 'Welcome';
+    message.textContent = 'Our family is growing and this beautiful chapter is already a milestone to celebrate. Update the actual arrival details when you know them.';
+    return;
+  }
+
+  const totalDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+  const weeks = Math.floor(totalDays / 7);
+  const daysLeft = totalDays % 7;
+
+  daysValue.textContent = String(totalDays);
+  weeksValue.textContent = String(weeks);
+  extraDaysValue.textContent = String(daysLeft);
+
+  message.textContent = `We are preparing to welcome Jack and Max. Our planned arrival date is ${formatDateLong(plannedDate)} and their actual arrival may differ.`;
+}
+
+function renderHomeDailyInspiration() {
+  const text = document.getElementById('daily-inspiration-text');
+  if (!text) return;
+  text.textContent = getDailyInspiration();
+}
+
+function getDailyInspiration() {
+  const index = Math.floor(Date.now() / 86400000) % state.inspiration.length;
+  return state.inspiration[index];
+}
+
 function renderStory() {
   const container = document.getElementById('story-timeline');
+  if (!container) return;
   if (!state.story.length) {
     container.innerHTML = emptyState('✦', 'This timeline is waiting for your first chapter.', 'Add a Memory');
     return;
@@ -197,7 +297,35 @@ function renderStory() {
               <span>${formatDate(item.date)}</span>
             </div>
             <h3>${escapeHtml(item.title)}</h3>
-            <p>${escapeHtml(item.summary)}</p>
+            <p>${escapeHtml(item.summary || item.description || '')}</p>
+          </div>
+        </article>
+      `
+    )
+    .join('');
+}
+
+function renderTimeline() {
+  const container = document.getElementById('timeline-list');
+  if (!container) return;
+  const items = state.timeline?.length ? state.timeline : state.story;
+  if (!items.length) {
+    container.innerHTML = emptyState('▣', 'Nothing on the timeline yet — start by adding a meaningful date.', 'Add Memory');
+    return;
+  }
+
+  container.innerHTML = items
+    .slice()
+    .sort((a, b) => new Date(a.date) - new Date(b.date))
+    .map(
+      (item) => `
+        <article class="timeline-item">
+          <div class="content">
+            <div class="meta">
+              <span>${formatDate(item.date)}</span>
+            </div>
+            <h3>${escapeHtml(item.title)}</h3>
+            <p>${escapeHtml(item.description || item.summary || '')}</p>
           </div>
         </article>
       `
@@ -209,6 +337,7 @@ function renderMemories() {
   const container = document.getElementById('memories-grid');
   const filtered = getFilteredMemories();
 
+  if (!container) return;
   if (!filtered.length) {
     container.innerHTML = emptyState('✦', 'Your memories will live here.', 'Add Memory');
     return;
@@ -218,7 +347,7 @@ function renderMemories() {
     .map(
       (entry) => `
         <article class="memory-card">
-          <span class="tag">${entry.category}</span>
+          <span class="tag">${escapeHtml(entry.category)}</span>
           <div class="meta">
             <span>${formatDate(entry.date)}</span>
           </div>
@@ -236,8 +365,139 @@ function getFilteredMemories() {
   return items.filter((item) => item.category === currentFilter);
 }
 
+function renderGallery() {
+  const container = document.getElementById('gallery-grid');
+  if (!container) return;
+  if (!state.gallery.length) {
+    container.innerHTML = emptyState('◌', 'The gallery is waiting for the first photograph.', 'Add Memory');
+    return;
+  }
+
+  container.innerHTML = state.gallery
+    .slice()
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .map(
+      (item) => `
+        <article class="gallery-card ${escapeHtml(item.accent || 'rose')}">
+          <div class="gallery-art"></div>
+          <div class="gallery-content">
+            <span>${formatDate(item.date)}</span>
+            <h3>${escapeHtml(item.title)}</h3>
+            <p>${escapeHtml(item.caption)}</p>
+          </div>
+        </article>
+      `
+    )
+    .join('');
+}
+
+function renderVoiceNotes() {
+  const container = document.getElementById('voice-notes-list');
+  if (!container) return;
+  if (!state.voiceNotes.length) {
+    container.innerHTML = emptyState('♫', 'Record little messages while the moment is still warm.', 'Add Memory');
+    return;
+  }
+
+  container.innerHTML = state.voiceNotes
+    .slice()
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .map(
+      (entry) => `
+        <article class="voice-card">
+          <div class="meta">
+            <span>${formatDate(entry.date)}</span>
+          </div>
+          <h3>${escapeHtml(entry.title)}</h3>
+          <p>${escapeHtml(entry.description)}</p>
+          <div class="voice-actions">
+            <button type="button" class="btn-secondary">Play</button>
+            <button type="button" class="btn-danger">Delete</button>
+          </div>
+        </article>
+      `
+    )
+    .join('');
+}
+
+function renderDiary() {
+  const container = document.getElementById('diary-list');
+  if (!container) return;
+  if (!state.diary.length) {
+    container.innerHTML = emptyState('✎', 'Your family diary is ready for the first update.', 'Add Memory');
+    return;
+  }
+
+  container.innerHTML = state.diary
+    .slice()
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .map(
+      (entry) => `
+        <article class="diary-card">
+          <div class="meta">
+            <span>${formatDate(entry.date)}</span>
+          </div>
+          <h3>${escapeHtml(entry.title)}</h3>
+          <p>${escapeHtml(entry.entry)}</p>
+        </article>
+      `
+    )
+    .join('');
+}
+
+function renderPregnancyJourney() {
+  const container = document.getElementById('pregnancy-journey');
+  if (!container) return;
+  if (!state.pregnancy.length) {
+    container.innerHTML = emptyState('❋', 'Record the pregnancy journey with gentle updates and milestones.', 'Add Memory');
+    return;
+  }
+
+  container.innerHTML = state.pregnancy
+    .slice()
+    .sort((a, b) => new Date(a.date) - new Date(b.date))
+    .map(
+      (entry) => `
+        <article class="pregnancy-card">
+          <div class="meta">
+            <span>${formatDate(entry.date)}</span>
+          </div>
+          <h3>${escapeHtml(entry.title)}</h3>
+          <p>${escapeHtml(entry.description)}</p>
+        </article>
+      `
+    )
+    .join('');
+}
+
+function renderLetters() {
+  const container = document.getElementById('letters-list');
+  if (!container) return;
+  if (!state.letters.length) {
+    container.innerHTML = emptyState('✉', 'Write the first letter to Jack and Max.', 'Add Memory');
+    return;
+  }
+
+  container.innerHTML = state.letters
+    .slice()
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .map(
+      (entry) => `
+        <article class="letter-card">
+          <div class="meta">
+            <span>${formatDate(entry.date)}</span>
+          </div>
+          <h3>${escapeHtml(entry.title)}</h3>
+          <p>${escapeHtml(entry.content)}</p>
+        </article>
+      `
+    )
+    .join('');
+}
+
 function renderNotes() {
   const container = document.getElementById('notes-list');
+  if (!container) return;
   if (!state.notes.length) {
     container.innerHTML = emptyState('✉', 'Leave something beautiful for each other.');
     return;
@@ -264,6 +524,7 @@ function renderFuture() {
   const container = document.getElementById('future-list');
   const filtered = getFilteredFuture();
 
+  if (!container) return;
   if (!filtered.length) {
     container.innerHTML = emptyState('✧', 'What are you looking forward to?', 'Add Dream');
     return;
@@ -292,6 +553,7 @@ function getFilteredFuture() {
 
 function renderExperiences() {
   const container = document.getElementById('experiences-list');
+  if (!container) return;
   const items = state.experiences[currentExperienceTab] || [];
 
   if (!items.length) {
@@ -317,6 +579,7 @@ function renderExperiences() {
 
 function renderMilestones() {
   const container = document.getElementById('milestones-list');
+  if (!container) return;
   if (!state.milestones.length) {
     container.innerHTML = emptyState('◉', 'Mark the important moments of your journey.', 'Add Milestone');
     return;
@@ -339,6 +602,22 @@ function renderMilestones() {
     .join('');
 }
 
+function renderInspiration() {
+  const container = document.getElementById('inspiration-list');
+  if (!container) return;
+
+  container.innerHTML = state.inspiration
+    .map(
+      (message, index) => `
+        <article class="inspiration-card">
+          <span class="inspiration-index">${index + 1}</span>
+          <p>${escapeHtml(message)}</p>
+        </article>
+      `
+    )
+    .join('');
+}
+
 function renderProfilePreview() {
   const partner1 = document.getElementById('partner1-name');
   const partner2 = document.getElementById('partner2-name');
@@ -350,20 +629,30 @@ function renderProfilePreview() {
 }
 
 function hydrateProfileFields() {
-  document.getElementById('partner1-name').addEventListener('input', (event) => {
-    state.profile.partner1 = event.target.value || 'Alana';
-    saveState();
-  });
+  const partner1 = document.getElementById('partner1-name');
+  const partner2 = document.getElementById('partner2-name');
+  const relationshipStart = document.getElementById('relationship-start');
 
-  document.getElementById('partner2-name').addEventListener('input', (event) => {
-    state.profile.partner2 = event.target.value || 'Cian';
-    saveState();
-  });
+  if (partner1) {
+    partner1.addEventListener('input', (event) => {
+      state.profile.partner1 = event.target.value || 'Alana';
+      saveState();
+    });
+  }
 
-  document.getElementById('relationship-start').addEventListener('change', (event) => {
-    state.profile.relationshipStart = event.target.value;
-    saveState();
-  });
+  if (partner2) {
+    partner2.addEventListener('input', (event) => {
+      state.profile.partner2 = event.target.value || 'Cian';
+      saveState();
+    });
+  }
+
+  if (relationshipStart) {
+    relationshipStart.addEventListener('change', (event) => {
+      state.profile.relationshipStart = event.target.value;
+      saveState();
+    });
+  }
 }
 
 function updateEmptyActionButtons() {
@@ -545,6 +834,12 @@ function addEntry(type, data) {
       date: clean.date,
       summary: clean.description || 'A chapter we are still writing.'
     });
+    state.timeline.push({
+      id: crypto.randomUUID(),
+      title: clean.title,
+      date: clean.date,
+      description: clean.description || 'A chapter we are still writing.'
+    });
   }
 
   saveState();
@@ -588,31 +883,43 @@ function registerServiceWorker() {
 }
 
 function bindSettingsActions() {
-  document.getElementById('export-data').addEventListener('click', () => {
-    const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'alana-cian-data.json';
-    link.click();
-    URL.revokeObjectURL(url);
-  });
+  const exportBtn = document.getElementById('export-data');
+  const importBtn = document.getElementById('import-data');
+  const resetBtn = document.getElementById('reset-data');
 
-  document.getElementById('import-data').addEventListener('click', () => {
-    document.getElementById('import-file').click();
-  });
+  if (exportBtn) {
+    exportBtn.addEventListener('click', () => {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'alana-cian-data.json';
+      link.click();
+      URL.revokeObjectURL(url);
+    });
+  }
 
-  document.getElementById('reset-data').addEventListener('click', () => {
-    if (window.confirm('Reset all saved memories, notes, plans, and milestones?')) {
-      state = structuredClone(defaultState);
-      saveState();
-      renderAll();
-    }
-  });
+  if (importBtn) {
+    importBtn.addEventListener('click', () => {
+      document.getElementById('import-file').click();
+    });
+  }
+
+  if (resetBtn) {
+    resetBtn.addEventListener('click', () => {
+      if (window.confirm('Reset all saved memories, notes, plans, and milestones?')) {
+        state = structuredClone(defaultState);
+        saveState();
+        renderAll();
+      }
+    });
+  }
 }
 
 function bindFileImport() {
   const input = document.getElementById('import-file');
+  if (!input) return;
+
   input.addEventListener('change', (event) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -638,6 +945,13 @@ function formatDate(dateString) {
   const date = new Date(dateString);
   if (Number.isNaN(date.getTime())) return dateString;
   return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function formatDateLong(dateString) {
+  if (!dateString) return 'Today';
+  const date = new Date(dateString);
+  if (Number.isNaN(date.getTime())) return dateString;
+  return date.toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' });
 }
 
 function escapeHtml(value) {

@@ -1,20 +1,21 @@
 :root {
-  --bg: #0b1020;
-  --bg-alt: #101827;
-  --panel: rgba(15, 23, 42, 0.7);
-  --panel-strong: rgba(15, 23, 42, 0.92);
-  --card: rgba(17, 24, 39, 0.7);
-  --line: rgba(148, 163, 184, 0.2);
-  --text: #f8fafc;
-  --muted: #cbd5e1;
-  --soft: #94a3b8;
-  --primary: #f472b6;
-  --secondary: #c084fc;
-  --accent: #7dd3fc;
-  --gold: #f9d976;
-  --success: #34d399;
-  --danger: #f87171;
-  --shadow: rgba(15, 23, 42, 0.35);
+  --bg: #f8f4ee;
+  --bg-alt: #fffaf6;
+  --panel: rgba(255, 255, 255, 0.82);
+  --panel-strong: rgba(255, 249, 244, 0.96);
+  --card: rgba(255, 255, 255, 0.9);
+  --line: rgba(122, 138, 141, 0.2);
+  --text: #1f2a2c;
+  --muted: #5d6a6d;
+  --soft: #7a8a8d;
+  --primary: #d97f86;
+  --secondary: #b5c6c1;
+  --accent: #7d96a0;
+  --sage: #7a9a90;
+  --gold: #d8b06f;
+  --success: #7e9d8f;
+  --danger: #c65e5e;
+  --shadow: rgba(101, 86, 75, 0.12);
 }
 
 * {
@@ -31,9 +32,9 @@ body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   color: var(--text);
   background:
-    radial-gradient(circle at top, rgba(168, 85, 247, 0.25), transparent 30%),
-    radial-gradient(circle at bottom right, rgba(34, 211, 238, 0.18), transparent 30%),
-    linear-gradient(160deg, #0b1020, #111827);
+    radial-gradient(circle at top, rgba(216, 176, 111, 0.18), transparent 20%),
+    radial-gradient(circle at bottom right, rgba(125, 150, 160, 0.12), transparent 28%),
+    linear-gradient(160deg, #f8f4ee, #fffaf6 30%, #f5efe9 100%);
 }
 
 button,
@@ -48,7 +49,7 @@ button {
 }
 
 #app {
-  width: min(100%, 1200px);
+  width: min(100%, 1180px);
   margin: 0 auto;
   padding: 18px 16px 100px;
 }
@@ -58,15 +59,15 @@ button {
   top: 12px;
   z-index: 14;
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(8, minmax(0, 1fr));
   gap: 8px;
   padding: 10px;
   margin: 0 auto 18px;
-  background: rgba(15, 23, 42, 0.72);
+  background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(12px);
   border: 1px solid var(--line);
   border-radius: 22px;
-  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.28);
+  box-shadow: 0 14px 30px rgba(101, 86, 75, 0.08);
 }
 
 .nav-item {
@@ -84,8 +85,8 @@ button {
 }
 
 .nav-item.active {
-  background: linear-gradient(135deg, rgba(244, 114, 182, 0.22), rgba(192, 132, 252, 0.22));
-  border-color: rgba(244, 114, 182, 0.4);
+  background: linear-gradient(135deg, rgba(217, 127, 134, 0.12), rgba(181, 198, 193, 0.12));
+  border-color: rgba(217, 127, 134, 0.28);
   color: var(--text);
 }
 
@@ -95,7 +96,7 @@ button {
 
 .nav-label {
   font-size: 0.72rem;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.02em;
 }
 
@@ -120,20 +121,20 @@ button {
 .home-hero {
   position: relative;
   overflow: hidden;
-  min-height: 260px;
+  min-height: 300px;
   border-radius: 30px;
-  background: linear-gradient(135deg, rgba(244, 114, 182, 0.18), rgba(167, 139, 250, 0.18), rgba(125, 211, 252, 0.12));
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.22);
+  background: linear-gradient(135deg, rgba(217, 127, 134, 0.18), rgba(181, 198, 193, 0.18), rgba(125, 150, 160, 0.2));
+  border: 1px solid rgba(122, 138, 141, 0.12);
+  box-shadow: 0 24px 40px rgba(101, 86, 75, 0.08);
 }
 
 .hero-glow {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 20% 20%, rgba(249, 217, 118, 0.3), transparent 26%),
-    radial-gradient(circle at 75% 30%, rgba(244, 114, 182, 0.28), transparent 28%),
-    radial-gradient(circle at 50% 80%, rgba(125, 211, 252, 0.2), transparent 22%);
+    radial-gradient(circle at 20% 20%, rgba(216, 176, 111, 0.3), transparent 22%),
+    radial-gradient(circle at 75% 30%, rgba(217, 127, 134, 0.2), transparent 24%),
+    radial-gradient(circle at 50% 80%, rgba(122, 154, 144, 0.18), transparent 28%);
 }
 
 .hero-content {
@@ -143,9 +144,18 @@ button {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 260px;
+  min-height: 300px;
   text-align: center;
   padding: 28px 18px;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
 }
 
 .hero-title {
@@ -167,10 +177,81 @@ button {
 
 .hero-subtle {
   margin-top: 8px;
-  color: rgba(255, 255, 255, 0.82);
-  font-size: 1.05rem;
+  color: var(--text);
+  font-size: 1.02rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.countdown-panel {
+  margin-top: 22px;
+  padding: 22px 18px;
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid var(--line);
+  box-shadow: 0 16px 30px rgba(101, 86, 75, 0.06);
+}
+
+.countdown-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.countdown-header h2 {
+  margin: 0;
+  font-size: clamp(1.5rem, 3vw, 2.3rem);
+}
+
+.countdown-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.countdown-box {
+  display: grid;
+  place-items: center;
+  min-height: 122px;
+  padding: 18px 10px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(217, 127, 134, 0.1), rgba(181, 198, 193, 0.14));
+  border: 1px solid rgba(217, 127, 134, 0.15);
+}
+
+.countdown-box-wide {
+  background: linear-gradient(135deg, rgba(125, 150, 160, 0.12), rgba(216, 176, 111, 0.1));
+}
+
+.countdown-value {
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+
+.countdown-label {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.countdown-message {
+  margin: 18px 0 10px;
+  font-size: 1.08rem;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+.countdown-note {
+  margin: 0;
+  padding: 0;
+  color: var(--muted);
+  font-size: 0.94rem;
 }
 
 .home-grid {
@@ -184,19 +265,19 @@ button {
   position: relative;
   display: block;
   overflow: hidden;
-  min-height: 150px;
+  min-height: 160px;
+  border: 1px solid var(--line);
   border-radius: 24px;
-  text-decoration: none;
+  background: rgba(255, 255, 255, 0.75);
   color: var(--text);
-  background: rgba(15, 23, 42, 0.68);
-  border: 1px solid rgba(148, 163, 184, 0.18);
-  box-shadow: 0 18px 30px rgba(15, 23, 42, 0.18);
+  box-shadow: 0 18px 30px rgba(101, 86, 75, 0.08);
+  text-align: left;
 }
 
 .card-glow {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(244, 114, 182, 0.16), rgba(167, 139, 250, 0.12), rgba(125, 211, 252, 0.1));
+  background: linear-gradient(135deg, rgba(217, 127, 134, 0.12), rgba(181, 198, 193, 0.14), rgba(125, 150, 160, 0.12));
 }
 
 .card-content {
@@ -206,7 +287,7 @@ button {
   flex-direction: column;
   justify-content: center;
   height: 100%;
-  padding: 22px 18px;
+  padding: 20px 18px;
 }
 
 .card-icon {
@@ -216,7 +297,7 @@ button {
 
 .card-content h3 {
   margin: 0 0 6px;
-  font-size: 1.3rem;
+  font-size: 1.15rem;
 }
 
 .card-content p {
@@ -224,15 +305,37 @@ button {
   color: var(--muted);
 }
 
+.home-inspiration {
+  margin-top: 24px;
+  padding: 18px 18px 16px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.74);
+  border: 1px solid var(--line);
+}
+
+.inspiration-label {
+  color: var(--soft);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.home-inspiration p {
+  margin: 10px 0 0;
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
 .home-quote {
   margin-top: 22px;
   padding: 18px 20px;
   text-align: center;
   border-radius: 18px;
-  background: rgba(15, 23, 42, 0.5);
+  background: rgba(255, 255, 255, 0.7);
   border: 1px solid var(--line);
-  color: #fdf2f8;
-  font-size: 1.1rem;
+  color: var(--text);
+  font-size: 1.06rem;
   font-style: italic;
 }
 
@@ -258,7 +361,13 @@ button {
 .notes-list,
 .future-list,
 .experiences-list,
-.milestones-list {
+.milestones-list,
+.gallery-grid,
+.voice-notes-list,
+.diary-list,
+.pregnancy-list,
+.letters-list,
+.inspiration-list {
   display: grid;
   gap: 16px;
 }
@@ -268,13 +377,19 @@ button {
 .note-card,
 .future-item,
 .experience-item,
-.milestone-item {
+.milestone-item,
+.gallery-card,
+.voice-card,
+.diary-card,
+.pregnancy-card,
+.letter-card,
+.inspiration-card {
   position: relative;
   overflow: hidden;
-  background: rgba(15, 23, 42, 0.65);
+  background: rgba(255, 255, 255, 0.76);
   border: 1px solid var(--line);
   border-radius: 20px;
-  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
+  box-shadow: 0 12px 24px rgba(101, 86, 75, 0.06);
 }
 
 .timeline-item {
@@ -289,8 +404,8 @@ button {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
-  box-shadow: 0 0 0 4px rgba(244, 114, 182, 0.08);
+  background: linear-gradient(135deg, var(--primary), var(--sage));
+  box-shadow: 0 0 0 4px rgba(217, 127, 134, 0.08);
 }
 
 .timeline-item .content {
@@ -302,21 +417,32 @@ button {
 .note-card h3,
 .future-item h3,
 .experience-item h3,
-.milestone-item h3 {
+.milestone-item h3,
+.gallery-card h3,
+.voice-card h3,
+.diary-card h3,
+.pregnancy-card h3,
+.letter-card h3,
+.inspiration-card p {
   margin: 0 0 8px;
-  font-size: 1.2rem;
+  font-size: 1.15rem;
 }
 
 .timeline-item .meta,
 .memory-card .meta,
 .future-item .meta,
 .experience-item .meta,
-.milestone-item .meta {
+.milestone-item .meta,
+.gallery-card span,
+.voice-card .meta,
+.diary-card .meta,
+.pregnancy-card .meta,
+.letter-card .meta {
   display: flex;
   align-items: center;
   gap: 8px;
   color: var(--soft);
-  font-size: 0.85rem;
+  font-size: 0.82rem;
 }
 
 .timeline-item p,
@@ -324,7 +450,12 @@ button {
 .note-card p,
 .future-item p,
 .experience-item p,
-.milestone-item p {
+.milestone-item p,
+.gallery-card p,
+.voice-card p,
+.diary-card p,
+.pregnancy-card p,
+.letter-card p {
   margin: 0;
   color: var(--muted);
   line-height: 1.6;
@@ -345,7 +476,7 @@ button {
   padding: 9px 14px;
   border-radius: 999px;
   border: 1px solid var(--line);
-  background: rgba(15, 23, 42, 0.52);
+  background: rgba(255, 255, 255, 0.7);
   color: var(--muted);
   transition: 0.2s ease;
 }
@@ -353,12 +484,13 @@ button {
 .filter-btn.active,
 .category-btn.active,
 .tab-btn.active {
-  background: linear-gradient(135deg, rgba(244, 114, 182, 0.2), rgba(192, 132, 252, 0.2));
-  border-color: rgba(192, 132, 252, 0.5);
+  background: linear-gradient(135deg, rgba(217, 127, 134, 0.12), rgba(181, 198, 193, 0.12));
+  border-color: rgba(217, 127, 134, 0.25);
   color: var(--text);
 }
 
-.memories-grid {
+.memories-grid,
+.gallery-grid {
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
@@ -366,21 +498,26 @@ button {
 .note-card,
 .future-item,
 .experience-item,
-.milestone-item {
+.milestone-item,
+.diary-card,
+.pregnancy-card,
+.letter-card,
+.voice-card,
+.gallery-card,
+.inspiration-card {
   padding: 18px;
 }
 
 .memory-card .tag,
 .future-item .tag,
-.experience-item .tag,
-.milestone-item .tag {
+.experience-item .tag {
   display: inline-flex;
   align-items: center;
   padding: 6px 10px;
   border-radius: 999px;
-  background: rgba(125, 211, 252, 0.12);
+  background: rgba(125, 150, 160, 0.12);
   color: var(--accent);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   margin-bottom: 10px;
@@ -405,9 +542,9 @@ button {
 .btn-compose,
 .btn-primary,
 .install-btn {
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  background: linear-gradient(135deg, var(--primary), var(--sage));
   color: white;
-  box-shadow: 0 12px 24px rgba(244, 114, 182, 0.25);
+  box-shadow: 0 12px 24px rgba(217, 127, 134, 0.22);
 }
 
 .btn-compose,
@@ -417,19 +554,19 @@ button {
 }
 
 .btn-secondary {
-  background: rgba(148, 163, 184, 0.14);
+  background: rgba(122, 138, 141, 0.1);
   color: var(--text);
   padding: 11px 16px;
 }
 
 .btn-danger {
-  background: rgba(248, 113, 113, 0.12);
-  color: rgba(254, 202, 202, 1);
+  background: rgba(198, 94, 94, 0.12);
+  color: var(--danger);
   padding: 11px 16px;
 }
 
 .note-card {
-  background: linear-gradient(135deg, rgba(244, 114, 182, 0.08), rgba(15, 23, 42, 0.78));
+  background: linear-gradient(135deg, rgba(217, 127, 134, 0.08), rgba(255, 255, 255, 0.76));
 }
 
 .empty-state {
@@ -441,8 +578,8 @@ button {
   min-height: 180px;
   padding: 22px;
   text-align: center;
-  background: rgba(15, 23, 42, 0.52);
-  border: 1px dashed rgba(148, 163, 184, 0.28);
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px dashed rgba(122, 138, 141, 0.28);
   border-radius: 22px;
   color: var(--muted);
 }
@@ -450,6 +587,58 @@ button {
 .empty-icon {
   font-size: 2.2rem;
   opacity: 0.9;
+}
+
+.gallery-card {
+  display: grid;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.gallery-art {
+  min-height: 176px;
+  background: linear-gradient(135deg, rgba(217, 127, 134, 0.26), rgba(181, 198, 193, 0.22), rgba(125, 150, 160, 0.18));
+}
+
+.gallery-card.rose .gallery-art {
+  background: linear-gradient(135deg, rgba(217, 127, 134, 0.35), rgba(216, 176, 111, 0.22));
+}
+
+.gallery-card.sage .gallery-art {
+  background: linear-gradient(135deg, rgba(122, 154, 144, 0.35), rgba(181, 198, 193, 0.2));
+}
+
+.gallery-card.blue .gallery-art {
+  background: linear-gradient(135deg, rgba(125, 150, 160, 0.38), rgba(181, 198, 193, 0.16));
+}
+
+.gallery-content {
+  padding: 18px;
+}
+
+.voice-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.inspiration-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.inspiration-index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: rgba(217, 127, 134, 0.12);
+  color: var(--primary);
+  font-weight: 700;
 }
 
 .install-banner {
@@ -464,9 +653,9 @@ button {
   margin: 0 auto 14px;
   padding: 12px 14px 12px 16px;
   border-radius: 16px;
-  background: rgba(15, 23, 42, 0.88);
-  border: 1px solid rgba(148, 163, 184, 0.24);
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.25);
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(122, 138, 141, 0.25);
+  box-shadow: 0 10px 30px rgba(101, 86, 75, 0.07);
 }
 
 .install-banner.hidden,
@@ -490,7 +679,7 @@ button {
   margin-top: 22px;
   padding: 18px;
   border-radius: 20px;
-  background: rgba(15, 23, 42, 0.64);
+  background: rgba(255, 255, 255, 0.76);
   border: 1px solid var(--line);
 }
 
@@ -520,9 +709,15 @@ button {
   width: 100%;
   padding: 12px 14px;
   border-radius: 12px;
-  border: 1px solid rgba(148, 163, 184, 0.25);
-  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid rgba(122, 138, 141, 0.25);
+  background: rgba(255, 255, 255, 0.72);
   color: var(--text);
+}
+
+.settings-note {
+  margin: 0 0 18px;
+  color: var(--muted);
+  line-height: 1.6;
 }
 
 .modal {
@@ -537,7 +732,7 @@ button {
 .modal-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(2, 6, 23, 0.64);
+  background: rgba(31, 42, 44, 0.3);
 }
 
 .modal-content {
@@ -548,8 +743,8 @@ button {
   overflow: auto;
   padding: 18px 18px 20px;
   border-radius: 24px;
-  background: rgba(15, 23, 42, 0.96);
-  border: 1px solid rgba(148, 163, 184, 0.18);
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(122, 138, 141, 0.18);
 }
 
 .modal-close {
@@ -558,7 +753,7 @@ button {
   top: 12px;
   width: 38px;
   height: 38px;
-  background: rgba(148, 163, 184, 0.08);
+  background: rgba(122, 138, 141, 0.08);
   color: var(--text);
   font-size: 1.6rem;
 }
@@ -572,12 +767,6 @@ button {
 .modal-form h3 {
   margin: 0;
   font-size: 1.5rem;
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
 }
 
 .modal-actions {
@@ -605,15 +794,15 @@ button:hover,
   }
 
   .main-nav {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .home-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .form-row {
-    grid-template-columns: 1fr;
+  .countdown-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -626,8 +815,23 @@ button:hover,
     grid-template-columns: 1fr;
   }
 
+  .countdown-grid {
+    grid-template-columns: 1fr;
+  }
+
   .install-banner {
     flex-wrap: wrap;
     justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
   }
 }
