@@ -7,6 +7,13 @@ const defaultState = {
     partner2: 'Cian',
     relationshipStart: '2024-05-19'
   },
+  familySync: {
+    enabled: false,
+    backend: 'Supabase',
+    status: 'Not configured',
+    lastSync: null,
+    setupStep: 'Add Supabase URL and anon key via config.js'
+  },
   story: [
     { id: crypto.randomUUID(), title: 'First time we met', date: '2010-06-14', summary: 'From the very first conversation, it felt like the beginning of something steady and true.' },
     { id: crypto.randomUUID(), title: 'Our first trip', date: '2014-09-02', summary: 'A weekend away, a lot of laughter, and the realization that adventure was better together.' },
@@ -112,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderAll();
   renderCountdown();
   renderHomeDailyInspiration();
-  renderBackendStatus();
+  renderSyncStatus();
   registerServiceWorker();
   bindInstallBanner();
   bindFileImport();
@@ -120,54 +127,19 @@ document.addEventListener('DOMContentLoaded', () => {
   setInterval(renderCountdown, 60000);
 });
 
-function getBackendConfig() {
-  const windowConfig = typeof window !== 'undefined' ? (window.__FAMILY_BOOK_CONFIG__ || {}) : {};
-  const storageValue = (function readStorage() {
-    try {
-      return localStorage.getItem('family-book-config');
-    } catch (error) {
-      return null;
-    }
-  })();
-
-  let storageConfig = {};
-  if (storageValue) {
-    try {
-      storageConfig = JSON.parse(storageValue);
-    } catch (error) {
-      storageConfig = {};
-    }
-  }
-
+function getAppConfig() {
+  const config = (typeof window !== 'undefined' && window.APP_CONFIG) ? window.APP_CONFIG : {};
   return {
-    enableSharedSync: Boolean(windowConfig.enableSharedSync || storageConfig.enableSharedSync),
-    supabaseUrl: windowConfig.supabaseUrl || storageConfig.supabaseUrl || '',
-    supabaseAnonKey: windowConfig.supabaseAnonKey || storageConfig.supabaseAnonKey || '',
-    appName: windowConfig.appName || storageConfig.appName || 'Alana & Cian Family Book'
+    supabase: {
+      url: config.supabase?.url || '',
+      anonKey: config.supabase?.anonKey || '',
+      enabled: Boolean(config.supabase?.enabled)
+    },
+    familyBook: {
+      backend: config.familyBook?.backend || 'Supabase',
+      syncEnabled: Boolean(config.familyBook?.syncEnabled)
+    }
   };
-}
-
-function renderBackendStatus() {
-  const statusNode = document.getElementById('backend-status');
-  if (!statusNode) return;
-
-  const config = getBackendConfig();
-  if (!config.enableSharedSync || !config.supabaseUrl || !config.supabaseAnonKey) {
-    statusNode.innerHTML = `
-      <div class="backend-status-box offline">
-        <strong>Shared sync is not configured yet.</strong>
-        <p>This app is still private and local-first. To enable multi-user access, add a Supabase project URL and anon key in a secure hosting environment or config file before enabling shared sync.</p>
-      </div>
-    `;
-    return;
-  }
-
-  statusNode.innerHTML = `
-    <div class="backend-status-box ready">
-      <strong>Shared sync ready for configuration.</strong>
-      <p>Authentication, row-level security policies, and protected tables are ready to be configured in Supabase for ${escapeHtml(config.appName)}.</p>
-    </div>
-  `;
 }
 
 function bindStaticEvents() {
@@ -281,7 +253,7 @@ function renderAll() {
   renderMilestones();
   renderInspiration();
   renderProfilePreview();
-  renderBackendStatus();
+  renderSyncStatus();
   updateEmptyActionButtons();
 }
 
@@ -342,6 +314,27 @@ function renderHomeDailyInspiration() {
 function getDailyInspiration() {
   const index = Math.floor(Date.now() / 86400000) % state.inspiration.length;
   return state.inspiration[index];
+}
+
+function renderSyncStatus() {
+  const container = document.getElementById('sync-status');
+  if (!container) return;
+
+  const config = getAppConfig();
+  const isConfigured = Boolean(config.supabase.url && config.supabase.anonKey);
+
+  const statusLabel = isConfigured ? 'Ready for secure shared sync' : 'Requires Supabase configuration';
+  const detail = isConfigured
+    ? 'Your app is ready to connect to a secure shared family space when you add the project URL and anon key.'
+    : 'No credentials are currently configured. Add them to config.js and complete the Supabase setup before enabling shared access.';
+
+  container.innerHTML = `
+    <div class="sync-status-header">
+      <span class="sync-badge ${isConfigured ? 'active' : ''}">${statusLabel}</span>
+    </div>
+    <p>${detail}</p>
+    <p class="sync-subtext">Backend: ${config.familyBook.backend || 'Supabase'} | Storage: private object buckets with server-side access control required.</p>
+  `;
 }
 
 function renderTimelineFilters() {
@@ -1272,6 +1265,18 @@ function bindSettingsActions() {
   const exportBtn = document.getElementById('export-data');
   const importBtn = document.getElementById('import-data');
   const resetBtn = document.getElementById('reset-data');
+  const setupBtn = document.getElementById('setup-sync-btn');
+
+  if (setupBtn) {
+    setupBtn.addEventListener('click', () => {
+      const config = getAppConfig();
+      if (config.supabase.url && config.supabase.anonKey) {
+        alert('Supabase configuration is present. Next, complete authentication, database tables, storage buckets, and security rules in the project settings.');
+        return;
+      }
+      alert('Supabase is not configured yet. Open config.js, add your project URL and anon key, then complete the setup guide in README.md before enabling multi-user shared access.');
+    });
+  }
 
   if (exportBtn) {
     exportBtn.addEventListener('click', () => {

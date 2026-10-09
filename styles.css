@@ -689,28 +689,47 @@ button {
   font-size: 0.85rem;
 }
 
-.backend-status {
-  display: grid;
-  gap: 12px;
+.sync-card {
+  margin-bottom: 18px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.76);
+  border: 1px solid var(--line);
 }
 
-.backend-status-box {
-  padding: 16px 18px;
-  border-radius: 16px;
-  border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.72);
-  color: var(--text);
+.sync-card p {
+  margin: 8px 0 0;
+  color: var(--muted);
   line-height: 1.6;
 }
 
-.backend-status-box.offline {
-  border-color: rgba(198, 94, 94, 0.22);
-  background: rgba(198, 94, 94, 0.06);
+.sync-status-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 
-.backend-status-box.ready {
-  border-color: rgba(126, 157, 143, 0.32);
-  background: rgba(126, 157, 143, 0.08);
+.sync-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(122, 138, 141, 0.12);
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.sync-badge.active {
+  background: rgba(126, 157, 143, 0.16);
+  color: var(--success);
+}
+
+.sync-subtext {
+  font-size: 0.82rem;
+  opacity: 0.9;
 }
 
 .install-banner {

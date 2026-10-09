@@ -12,6 +12,7 @@
     <link rel="icon" type="image/svg+xml" href="icons/icon.svg" />
     <link rel="apple-touch-icon" href="icons/icon.svg" />
     <link rel="stylesheet" href="styles.css" />
+    <script src="config.js"></script>
     <title>Alana & Cian Family Memory Book</title>
   </head>
   <body>
@@ -370,15 +371,16 @@
           </div>
 
           <div class="settings-section">
+            <h3>Shared Family Access</h3>
+            <div id="sync-status" class="sync-card"></div>
+            <button class="btn-secondary" id="setup-sync-btn" type="button">Setup Supabase</button>
+          </div>
+
+          <div class="settings-section">
             <h3>Data</h3>
             <button class="btn-secondary" id="export-data" type="button">Export Our Data</button>
             <button class="btn-secondary" id="import-data" type="button">Import Data</button>
             <input type="file" id="import-file" accept=".json" hidden />
-          </div>
-
-          <div class="settings-section">
-            <h3>Shared family sync</h3>
-            <div id="backend-status" class="backend-status" aria-live="polite"></div>
           </div>
 
           <div class="settings-section">
