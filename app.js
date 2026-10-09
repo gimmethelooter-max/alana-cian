@@ -13,10 +13,10 @@ const defaultState = {
     { id: crypto.randomUUID(), title: 'The promise', date: '2024-05-19', summary: 'We chose each other, again and again, in the quiet ways that build a life.' }
   ],
   timeline: [
-    { id: crypto.randomUUID(), title: 'First time we met', date: '2010-06-14', description: 'From the very first conversation, it felt like the beginning of something steady and true.' },
-    { id: crypto.randomUUID(), title: 'Our first trip', date: '2014-09-02', description: 'A weekend away, a lot of laughter, and the realization that adventure was better together.' },
-    { id: crypto.randomUUID(), title: 'We chose each other', date: '2024-05-19', description: 'We chose each other, again and again, in the quiet ways that build a life.' },
-    { id: crypto.randomUUID(), title: 'Planning for Jack and Max', date: '2026-10-09', description: 'Preparing our home and hearts for the twins we are waiting to meet.' }
+    { id: crypto.randomUUID(), title: 'First time we met', date: '2010-06-14', description: 'From the very first conversation, it felt like the beginning of something steady and true.', eventType: 'relationship', familyMember: 'both' },
+    { id: crypto.randomUUID(), title: 'Our first trip', date: '2014-09-02', description: 'A weekend away, a lot of laughter, and the realization that adventure was better together.', eventType: 'adventure', familyMember: 'both' },
+    { id: crypto.randomUUID(), title: 'We chose each other', date: '2024-05-19', description: 'We chose each other, again and again, in the quiet ways that build a life.', eventType: 'celebration', familyMember: 'both' },
+    { id: crypto.randomUUID(), title: 'Planning for Jack and Max', date: '2026-10-09', description: 'Preparing our home and hearts for the twins we are waiting to meet.', eventType: 'pregnancy', familyMember: 'both' }
   ],
   memories: [
     { id: crypto.randomUUID(), title: 'Sunrise coffee', category: 'dates', date: '2025-02-14', description: 'Watching the city wake up while we talked about everything and nothing.' },
@@ -86,6 +86,7 @@ let currentPage = 'home';
 let currentFilter = 'all';
 let currentCategory = 'all';
 let currentExperienceTab = 'want';
+let currentTimelineFilter = { date: 'all', type: 'all', member: 'all' };
 let deferredPrompt = null;
 
 const pages = {
@@ -111,12 +112,63 @@ document.addEventListener('DOMContentLoaded', () => {
   renderAll();
   renderCountdown();
   renderHomeDailyInspiration();
+  renderBackendStatus();
   registerServiceWorker();
   bindInstallBanner();
   bindFileImport();
   bindSettingsActions();
   setInterval(renderCountdown, 60000);
 });
+
+function getBackendConfig() {
+  const windowConfig = typeof window !== 'undefined' ? (window.__FAMILY_BOOK_CONFIG__ || {}) : {};
+  const storageValue = (function readStorage() {
+    try {
+      return localStorage.getItem('family-book-config');
+    } catch (error) {
+      return null;
+    }
+  })();
+
+  let storageConfig = {};
+  if (storageValue) {
+    try {
+      storageConfig = JSON.parse(storageValue);
+    } catch (error) {
+      storageConfig = {};
+    }
+  }
+
+  return {
+    enableSharedSync: Boolean(windowConfig.enableSharedSync || storageConfig.enableSharedSync),
+    supabaseUrl: windowConfig.supabaseUrl || storageConfig.supabaseUrl || '',
+    supabaseAnonKey: windowConfig.supabaseAnonKey || storageConfig.supabaseAnonKey || '',
+    appName: windowConfig.appName || storageConfig.appName || 'Alana & Cian Family Book'
+  };
+}
+
+function renderBackendStatus() {
+  const statusNode = document.getElementById('backend-status');
+  if (!statusNode) return;
+
+  const config = getBackendConfig();
+  if (!config.enableSharedSync || !config.supabaseUrl || !config.supabaseAnonKey) {
+    statusNode.innerHTML = `
+      <div class="backend-status-box offline">
+        <strong>Shared sync is not configured yet.</strong>
+        <p>This app is still private and local-first. To enable multi-user access, add a Supabase project URL and anon key in a secure hosting environment or config file before enabling shared sync.</p>
+      </div>
+    `;
+    return;
+  }
+
+  statusNode.innerHTML = `
+    <div class="backend-status-box ready">
+      <strong>Shared sync ready for configuration.</strong>
+      <p>Authentication, row-level security policies, and protected tables are ready to be configured in Supabase for ${escapeHtml(config.appName)}.</p>
+    </div>
+  `;
+}
 
 function bindStaticEvents() {
   document.querySelectorAll('.nav-item').forEach((button) => {
@@ -164,7 +216,20 @@ function bindStaticEvents() {
       if (action === 'add-dream') openModal('future');
       if (action === 'add-experience') openModal('experience');
       if (action === 'add-milestone') openModal('milestone');
+      if (action === 'add-diary') openModal('diary');
+      if (action === 'add-pregnancy') openModal('pregnancy');
+      if (action === 'add-letter') openModal('letter');
+      if (action === 'add-timeline-entry') openModal('timeline');
     });
+  });
+
+  document.getElementById('add-custom-inspiration')?.addEventListener('click', () => {
+    const customMessage = window.prompt('Write a new daily message to save to your family inspiration list:');
+    if (!customMessage || !customMessage.trim()) return;
+    state.inspiration.unshift(customMessage.trim());
+    saveState();
+    renderInspiration();
+    renderHomeDailyInspiration();
   });
 
   document.querySelector('.modal-close').addEventListener('click', closeModal);
@@ -216,6 +281,7 @@ function renderAll() {
   renderMilestones();
   renderInspiration();
   renderProfilePreview();
+  renderBackendStatus();
   updateEmptyActionButtons();
 }
 
@@ -278,6 +344,69 @@ function getDailyInspiration() {
   return state.inspiration[index];
 }
 
+function renderTimelineFilters() {
+  const toolbar = document.getElementById('timeline-toolbar');
+  if (!toolbar) return;
+
+  toolbar.innerHTML = `
+    <div class="filter-bar timeline-filters">
+      <label class="filter-select">
+        <span>Date</span>
+        <select id="timeline-date-filter">
+          <option value="all">All dates</option>
+          <option value="recent">Recent</option>
+          <option value="older">Older</option>
+        </select>
+      </label>
+      <label class="filter-select">
+        <span>Type</span>
+        <select id="timeline-type-filter">
+          <option value="all">All types</option>
+          <option value="relationship">Relationship</option>
+          <option value="celebration">Celebration</option>
+          <option value="adventure">Adventure</option>
+          <option value="pregnancy">Pregnancy</option>
+          <option value="family">Family</option>
+        </select>
+      </label>
+      <label class="filter-select">
+        <span>Family member</span>
+        <select id="timeline-member-filter">
+          <option value="all">Everyone</option>
+          <option value="alana">Alana</option>
+          <option value="cian">Cian</option>
+          <option value="both">Both</option>
+          <option value="jack-max">Jack &amp; Max</option>
+        </select>
+      </label>
+      <button class="btn-primary" data-action="add-timeline-entry" type="button">Add timeline entry</button>
+    </div>
+  `;
+
+  const dateFilter = document.getElementById('timeline-date-filter');
+  const typeFilter = document.getElementById('timeline-type-filter');
+  const memberFilter = document.getElementById('timeline-member-filter');
+
+  dateFilter.value = currentTimelineFilter.date;
+  typeFilter.value = currentTimelineFilter.type;
+  memberFilter.value = currentTimelineFilter.member;
+
+  dateFilter.addEventListener('change', (event) => {
+    currentTimelineFilter.date = event.target.value;
+    renderTimeline();
+  });
+
+  typeFilter.addEventListener('change', (event) => {
+    currentTimelineFilter.type = event.target.value;
+    renderTimeline();
+  });
+
+  memberFilter.addEventListener('change', (event) => {
+    currentTimelineFilter.member = event.target.value;
+    renderTimeline();
+  });
+}
+
 function renderStory() {
   const container = document.getElementById('story-timeline');
   if (!container) return;
@@ -291,26 +420,35 @@ function renderStory() {
     .sort((a, b) => new Date(a.date) - new Date(b.date))
     .map(
       (item) => `
-        <article class="timeline-item">
+        <article class="timeline-item" data-id="${item.id}">
           <div class="content">
             <div class="meta">
               <span>${formatDate(item.date)}</span>
             </div>
             <h3>${escapeHtml(item.title)}</h3>
             <p>${escapeHtml(item.summary || item.description || '')}</p>
+            <div class="entry-actions">
+              <button class="btn-secondary small-btn" data-edit-type="story" data-id="${item.id}" type="button">Edit</button>
+              <button class="btn-danger small-btn" data-delete-type="story" data-id="${item.id}" type="button">Delete</button>
+            </div>
           </div>
         </article>
       `
     )
     .join('');
+
+  bindEntryActionButtons();
 }
 
 function renderTimeline() {
   const container = document.getElementById('timeline-list');
   if (!container) return;
-  const items = state.timeline?.length ? state.timeline : state.story;
+
+  renderTimelineFilters();
+
+  const items = getFilteredTimeline();
   if (!items.length) {
-    container.innerHTML = emptyState('▣', 'Nothing on the timeline yet — start by adding a meaningful date.', 'Add Memory');
+    container.innerHTML = emptyState('▣', 'Nothing on the timeline yet — start by adding a meaningful date.', 'Add entry');
     return;
   }
 
@@ -319,18 +457,47 @@ function renderTimeline() {
     .sort((a, b) => new Date(a.date) - new Date(b.date))
     .map(
       (item) => `
-        <article class="timeline-item">
+        <article class="timeline-item" data-id="${item.id}">
           <div class="content">
             <div class="meta">
               <span>${formatDate(item.date)}</span>
+              <span class="pill">${escapeHtml(item.eventType || 'relationship')}</span>
+              <span class="pill subtle">${escapeHtml(item.familyMember || 'both')}</span>
             </div>
             <h3>${escapeHtml(item.title)}</h3>
             <p>${escapeHtml(item.description || item.summary || '')}</p>
+            <div class="entry-actions">
+              <button class="btn-secondary small-btn" data-edit-type="timeline" data-id="${item.id}" type="button">Edit</button>
+              <button class="btn-danger small-btn" data-delete-type="timeline" data-id="${item.id}" type="button">Delete</button>
+            </div>
           </div>
         </article>
       `
     )
     .join('');
+
+  bindEntryActionButtons();
+}
+
+function getFilteredTimeline() {
+  let items = [...state.timeline];
+
+  if (currentTimelineFilter.date === 'recent') {
+    items = items.filter((item) => new Date(item.date) >= new Date('2024-01-01'));
+  }
+  if (currentTimelineFilter.date === 'older') {
+    items = items.filter((item) => new Date(item.date) < new Date('2024-01-01'));
+  }
+
+  if (currentTimelineFilter.type !== 'all') {
+    items = items.filter((item) => (item.eventType || 'relationship') === currentTimelineFilter.type);
+  }
+
+  if (currentTimelineFilter.member !== 'all') {
+    items = items.filter((item) => (item.familyMember || 'both') === currentTimelineFilter.member);
+  }
+
+  return items;
 }
 
 function renderMemories() {
@@ -346,17 +513,23 @@ function renderMemories() {
   container.innerHTML = filtered
     .map(
       (entry) => `
-        <article class="memory-card">
+        <article class="memory-card" data-id="${entry.id}">
           <span class="tag">${escapeHtml(entry.category)}</span>
           <div class="meta">
             <span>${formatDate(entry.date)}</span>
           </div>
           <h3>${escapeHtml(entry.title)}</h3>
           <p>${escapeHtml(entry.description)}</p>
+          <div class="entry-actions">
+            <button class="btn-secondary small-btn" data-edit-type="memory" data-id="${entry.id}" type="button">Edit</button>
+            <button class="btn-danger small-btn" data-delete-type="memory" data-id="${entry.id}" type="button">Delete</button>
+          </div>
         </article>
       `
     )
     .join('');
+
+  bindEntryActionButtons();
 }
 
 function getFilteredMemories() {
@@ -384,11 +557,17 @@ function renderGallery() {
             <span>${formatDate(item.date)}</span>
             <h3>${escapeHtml(item.title)}</h3>
             <p>${escapeHtml(item.caption)}</p>
+            <div class="entry-actions">
+              <button class="btn-secondary small-btn" data-edit-type="gallery" data-id="${item.id}" type="button">Edit</button>
+              <button class="btn-danger small-btn" data-delete-type="gallery" data-id="${item.id}" type="button">Delete</button>
+            </div>
           </div>
         </article>
       `
     )
     .join('');
+
+  bindEntryActionButtons();
 }
 
 function renderVoiceNotes() {
@@ -412,12 +591,14 @@ function renderVoiceNotes() {
           <p>${escapeHtml(entry.description)}</p>
           <div class="voice-actions">
             <button type="button" class="btn-secondary">Play</button>
-            <button type="button" class="btn-danger">Delete</button>
+            <button type="button" class="btn-danger" data-delete-type="voiceNote" data-id="${entry.id}">Delete</button>
           </div>
         </article>
       `
     )
     .join('');
+
+  bindEntryActionButtons();
 }
 
 function renderDiary() {
@@ -439,10 +620,16 @@ function renderDiary() {
           </div>
           <h3>${escapeHtml(entry.title)}</h3>
           <p>${escapeHtml(entry.entry)}</p>
+          <div class="entry-actions">
+            <button class="btn-secondary small-btn" data-edit-type="diary" data-id="${entry.id}" type="button">Edit</button>
+            <button class="btn-danger small-btn" data-delete-type="diary" data-id="${entry.id}" type="button">Delete</button>
+          </div>
         </article>
       `
     )
     .join('');
+
+  bindEntryActionButtons();
 }
 
 function renderPregnancyJourney() {
@@ -464,10 +651,16 @@ function renderPregnancyJourney() {
           </div>
           <h3>${escapeHtml(entry.title)}</h3>
           <p>${escapeHtml(entry.description)}</p>
+          <div class="entry-actions">
+            <button class="btn-secondary small-btn" data-edit-type="pregnancy" data-id="${entry.id}" type="button">Edit</button>
+            <button class="btn-danger small-btn" data-delete-type="pregnancy" data-id="${entry.id}" type="button">Delete</button>
+          </div>
         </article>
       `
     )
     .join('');
+
+  bindEntryActionButtons();
 }
 
 function renderLetters() {
@@ -489,10 +682,16 @@ function renderLetters() {
           </div>
           <h3>${escapeHtml(entry.title)}</h3>
           <p>${escapeHtml(entry.content)}</p>
+          <div class="entry-actions">
+            <button class="btn-secondary small-btn" data-edit-type="letter" data-id="${entry.id}" type="button">Edit</button>
+            <button class="btn-danger small-btn" data-delete-type="letter" data-id="${entry.id}" type="button">Delete</button>
+          </div>
         </article>
       `
     )
     .join('');
+
+  bindEntryActionButtons();
 }
 
 function renderNotes() {
@@ -514,10 +713,16 @@ function renderNotes() {
           </div>
           <h3>${escapeHtml(note.title || 'Untitled note')}</h3>
           <p>${escapeHtml(note.content)}</p>
+          <div class="entry-actions">
+            <button class="btn-secondary small-btn" data-edit-type="note" data-id="${note.id}" type="button">Edit</button>
+            <button class="btn-danger small-btn" data-delete-type="note" data-id="${note.id}" type="button">Delete</button>
+          </div>
         </article>
       `
     )
     .join('');
+
+  bindEntryActionButtons();
 }
 
 function renderFuture() {
@@ -540,10 +745,16 @@ function renderFuture() {
           </div>
           <h3>${escapeHtml(entry.title)}</h3>
           <p>${escapeHtml(entry.description)}</p>
+          <div class="entry-actions">
+            <button class="btn-secondary small-btn" data-edit-type="future" data-id="${entry.id}" type="button">Edit</button>
+            <button class="btn-danger small-btn" data-delete-type="future" data-id="${entry.id}" type="button">Delete</button>
+          </div>
         </article>
       `
     )
     .join('');
+
+  bindEntryActionButtons();
 }
 
 function getFilteredFuture() {
@@ -571,10 +782,16 @@ function renderExperiences() {
           </div>
           <h3>${escapeHtml(entry.title)}</h3>
           <p>${escapeHtml(entry.description)}</p>
+          <div class="entry-actions">
+            <button class="btn-secondary small-btn" data-edit-type="experience" data-id="${entry.id}" type="button">Edit</button>
+            <button class="btn-danger small-btn" data-delete-type="experience" data-id="${entry.id}" type="button">Delete</button>
+          </div>
         </article>
       `
     )
     .join('');
+
+  bindEntryActionButtons();
 }
 
 function renderMilestones() {
@@ -596,10 +813,16 @@ function renderMilestones() {
           </div>
           <h3>${escapeHtml(item.title)}</h3>
           <p>${escapeHtml(item.description)}</p>
+          <div class="entry-actions">
+            <button class="btn-secondary small-btn" data-edit-type="milestone" data-id="${item.id}" type="button">Edit</button>
+            <button class="btn-danger small-btn" data-delete-type="milestone" data-id="${item.id}" type="button">Delete</button>
+          </div>
         </article>
       `
     )
     .join('');
+
+  bindEntryActionButtons();
 }
 
 function renderInspiration() {
@@ -655,6 +878,24 @@ function hydrateProfileFields() {
   }
 }
 
+function bindEntryActionButtons() {
+  document.querySelectorAll('[data-edit-type]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const type = button.dataset.editType;
+      const id = button.dataset.id;
+      openEditModal(type, id);
+    });
+  });
+
+  document.querySelectorAll('[data-delete-type]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const type = button.dataset.deleteType;
+      const id = button.dataset.id;
+      deleteEntry(type, id);
+    });
+  });
+}
+
 function updateEmptyActionButtons() {
   document.querySelectorAll('.empty-state .btn-primary').forEach((button) => {
     button.addEventListener('click', () => {
@@ -666,74 +907,129 @@ function updateEmptyActionButtons() {
       if (id === 'future') openModal('future');
       if (id === 'experiences') openModal('experience');
       if (id === 'milestones') openModal('milestone');
+      if (id === 'diary') openModal('diary');
+      if (id === 'letters') openModal('letter');
+      if (id === 'pregnancy') openModal('pregnancy');
     });
   });
 }
 
-function openModal(type) {
-  const modal = document.getElementById('modal');
-  const modalBody = document.getElementById('modal-body');
+function openEditModal(type, id) {
+  const original = findEntryById(type, id);
+  if (!original) return;
 
-  const formConfig = {
+  const config = getFormConfig(type, true, original);
+  openDynamicModal(config, type, original);
+}
+
+function getFormConfig(type, isEdit = false, original = null) {
+  const base = {
     memory: {
-      title: 'Add Memory',
+      title: isEdit ? 'Edit Memory' : 'Add Memory',
       fields: [
-        { label: 'Title', name: 'title', type: 'text', required: true },
-        { label: 'Category', name: 'category', type: 'select', options: ['photos', 'dates', 'family', 'adventures'] },
-        { label: 'Date', name: 'date', type: 'date', required: true },
-        { label: 'Description', name: 'description', type: 'textarea', required: true }
+        { label: 'Title', name: 'title', type: 'text', required: true, value: original?.title || '' },
+        { label: 'Category', name: 'category', type: 'select', options: ['photos', 'dates', 'family', 'adventures'], value: original?.category || 'photos' },
+        { label: 'Date', name: 'date', type: 'date', required: true, value: original?.date || '' },
+        { label: 'Description', name: 'description', type: 'textarea', required: true, value: original?.description || '' }
       ]
     },
     note: {
-      title: 'Write a Note',
+      title: isEdit ? 'Edit Note' : 'Write a Note',
       fields: [
-        { label: 'Title', name: 'title', type: 'text' },
-        { label: 'Date', name: 'date', type: 'date', required: true },
-        { label: 'Message', name: 'content', type: 'textarea', required: true }
+        { label: 'Title', name: 'title', type: 'text', value: original?.title || '' },
+        { label: 'Date', name: 'date', type: 'date', required: true, value: original?.date || '' },
+        { label: 'Message', name: 'content', type: 'textarea', required: true, value: original?.content || '' }
       ]
     },
     future: {
-      title: 'Add Dream',
+      title: isEdit ? 'Edit Dream' : 'Add Dream',
       fields: [
-        { label: 'Title', name: 'title', type: 'text', required: true },
-        { label: 'Category', name: 'category', type: 'select', options: ['places', 'experiences', 'dreams', 'home'] },
-        { label: 'Date', name: 'date', type: 'date', required: true },
-        { label: 'Description', name: 'description', type: 'textarea', required: true }
+        { label: 'Title', name: 'title', type: 'text', required: true, value: original?.title || '' },
+        { label: 'Category', name: 'category', type: 'select', options: ['places', 'experiences', 'dreams', 'home'], value: original?.category || 'dreams' },
+        { label: 'Date', name: 'date', type: 'date', required: true, value: original?.date || '' },
+        { label: 'Description', name: 'description', type: 'textarea', required: true, value: original?.description || '' }
+      ]
+    },
+    diary: {
+      title: isEdit ? 'Edit Diary Entry' : 'Add Diary Entry',
+      fields: [
+        { label: 'Title', name: 'title', type: 'text', required: true, value: original?.title || '' },
+        { label: 'Date', name: 'date', type: 'date', required: true, value: original?.date || '' },
+        { label: 'Entry', name: 'entry', type: 'textarea', required: true, value: original?.entry || '' }
+      ]
+    },
+    pregnancy: {
+      title: isEdit ? 'Edit Pregnancy Update' : 'Add Pregnancy Update',
+      fields: [
+        { label: 'Title', name: 'title', type: 'text', required: true, value: original?.title || '' },
+        { label: 'Date', name: 'date', type: 'date', required: true, value: original?.date || '' },
+        { label: 'Details', name: 'description', type: 'textarea', required: true, value: original?.description || '' }
+      ]
+    },
+    letter: {
+      title: isEdit ? 'Edit Letter' : 'Write a Letter',
+      fields: [
+        { label: 'Title', name: 'title', type: 'text', required: true, value: original?.title || '' },
+        { label: 'Date', name: 'date', type: 'date', required: true, value: original?.date || '' },
+        { label: 'Letter', name: 'content', type: 'textarea', required: true, value: original?.content || '' }
+      ]
+    },
+    timeline: {
+      title: isEdit ? 'Edit Timeline Entry' : 'Add Timeline Entry',
+      fields: [
+        { label: 'Title', name: 'title', type: 'text', required: true, value: original?.title || '' },
+        { label: 'Date', name: 'date', type: 'date', required: true, value: original?.date || '' },
+        { label: 'Type', name: 'eventType', type: 'select', options: ['relationship', 'celebration', 'adventure', 'pregnancy', 'family'], value: original?.eventType || 'relationship' },
+        { label: 'Family member', name: 'familyMember', type: 'select', options: ['both', 'alana', 'cian', 'jack-max'], value: original?.familyMember || 'both' },
+        { label: 'Description', name: 'description', type: 'textarea', required: true, value: original?.description || '' }
+      ]
+    },
+    story: {
+      title: isEdit ? 'Edit Story Chapter' : 'Add Story Chapter',
+      fields: [
+        { label: 'Title', name: 'title', type: 'text', required: true, value: original?.title || '' },
+        { label: 'Date', name: 'date', type: 'date', required: true, value: original?.date || '' },
+        { label: 'Summary', name: 'summary', type: 'textarea', required: true, value: original?.summary || '' }
       ]
     },
     experience: {
-      title: 'Add Experience',
+      title: isEdit ? 'Edit Experience' : 'Add Experience',
       fields: [
-        { label: 'Title', name: 'title', type: 'text', required: true },
-        { label: 'Status', name: 'status', type: 'select', options: ['want', 'planned', 'done'] },
-        { label: 'Date', name: 'date', type: 'date', required: true },
-        { label: 'Description', name: 'description', type: 'textarea', required: true }
+        { label: 'Title', name: 'title', type: 'text', required: true, value: original?.title || '' },
+        { label: 'Status', name: 'status', type: 'select', options: ['want', 'planned', 'done'], value: original?.status || 'want' },
+        { label: 'Date', name: 'date', type: 'date', required: true, value: original?.date || '' },
+        { label: 'Description', name: 'description', type: 'textarea', required: true, value: original?.description || '' }
       ]
     },
     milestone: {
-      title: 'Add Milestone',
+      title: isEdit ? 'Edit Milestone' : 'Add Milestone',
       fields: [
-        { label: 'Title', name: 'title', type: 'text', required: true },
-        { label: 'Date', name: 'date', type: 'date', required: true },
-        { label: 'Description', name: 'description', type: 'textarea', required: true }
+        { label: 'Title', name: 'title', type: 'text', required: true, value: original?.title || '' },
+        { label: 'Date', name: 'date', type: 'date', required: true, value: original?.date || '' },
+        { label: 'Description', name: 'description', type: 'textarea', required: true, value: original?.description || '' }
       ]
     }
   };
 
-  const config = formConfig[type];
-  if (!config) return;
+  return base[type] || base.memory;
+}
+
+function openDynamicModal(config, type, original = null) {
+  const modal = document.getElementById('modal');
+  const modalBody = document.getElementById('modal-body');
 
   modalBody.innerHTML = `
-    <form class="modal-form" data-form-type="${type}">
+    <form class="modal-form" data-form-type="${type}" data-edit-id="${original?.id || ''}">
       <h3>${config.title}</h3>
       ${config.fields
         .map((field) => {
+          const value = field.value ?? '';
           const inputHtml =
             field.type === 'textarea'
-              ? `<textarea name="${field.name}" ${field.required ? 'required' : ''} rows="4"></textarea>`
+              ? `<textarea name="${field.name}" ${field.required ? 'required' : ''} rows="4">${escapeHtml(value)}</textarea>`
               : field.type === 'select'
-                ? `<select name="${field.name}" ${field.required ? 'required' : ''}>${field.options.map((option) => `<option value="${option}">${option}</option>`).join('')}</select>`
-                : `<input type="${field.type}" name="${field.name}" ${field.required ? 'required' : ''} />`;
+                ? `<select name="${field.name}" ${field.required ? 'required' : ''}>${field.options.map((option) => `<option value="${option}" ${option === value ? 'selected' : ''}>${option}</option>`).join('')}</select>`
+                : `<input type="${field.type}" name="${field.name}" value="${escapeHtml(value)}" ${field.required ? 'required' : ''} />`;
 
           return `
             <div class="profile-field">
@@ -757,11 +1053,17 @@ function openModal(type) {
     event.preventDefault();
     const form = event.currentTarget;
     const data = Object.fromEntries(new FormData(form));
-    addEntry(type, data);
+    const editId = form.dataset.editId || null;
+    saveEditedEntry(type, data, editId);
     closeModal();
   });
 
   modalBody.querySelector('[data-close="modal"]').addEventListener('click', closeModal);
+}
+
+function openModal(type) {
+  const config = getFormConfig(type, false, null);
+  openDynamicModal(config, type, null);
 }
 
 function closeModal() {
@@ -771,75 +1073,159 @@ function closeModal() {
   document.getElementById('modal-body').innerHTML = '';
 }
 
-function addEntry(type, data) {
+function findEntryById(type, id) {
+  const map = {
+    memory: state.memories,
+    note: state.notes,
+    future: state.future,
+    diary: state.diary,
+    pregnancy: state.pregnancy,
+    letter: state.letters,
+    timeline: state.timeline,
+    story: state.story,
+    experience: (() => {
+      const items = [];
+      Object.values(state.experiences).forEach((arr) => items.push(...arr));
+      return items;
+    })(),
+    milestone: state.milestones,
+    gallery: state.gallery,
+    voiceNote: state.voiceNotes
+  };
+
+  const list = Array.isArray(map[type]) ? map[type] : [];
+  return list.find((item) => item.id === id);
+}
+
+function saveEditedEntry(type, data, id) {
   const clean = {
-    id: crypto.randomUUID(),
     title: (data.title || '').trim(),
     date: data.date || new Date().toISOString().slice(0, 10),
     description: (data.description || '').trim(),
-    content: (data.content || '').trim()
+    content: (data.content || '').trim(),
+    entry: (data.entry || '').trim(),
+    summary: (data.summary || '').trim(),
+    eventType: data.eventType || 'relationship',
+    familyMember: data.familyMember || 'both'
   };
 
   if (type === 'memory') {
-    state.memories.push({
-      ...clean,
-      category: data.category || 'photos',
-      description: clean.description || 'A new memory to treasure.'
-    });
+    if (id) {
+      const item = state.memories.find((entry) => entry.id === id);
+      if (item) Object.assign(item, { ...item, title: clean.title, date: clean.date, category: data.category || item.category, description: clean.description || item.description });
+    } else {
+      state.memories.push({ id: crypto.randomUUID(), title: clean.title, category: data.category || 'photos', date: clean.date, description: clean.description || 'A new memory to treasure.' });
+    }
   }
 
   if (type === 'note') {
-    state.notes.push({
-      id: crypto.randomUUID(),
-      title: clean.title || 'A note',
-      date: clean.date,
-      content: clean.content || 'Some words worth keeping.'
-    });
+    if (id) {
+      const item = state.notes.find((entry) => entry.id === id);
+      if (item) Object.assign(item, { ...item, title: clean.title || item.title, date: clean.date, content: clean.content || item.content });
+    } else {
+      state.notes.push({ id: crypto.randomUUID(), title: clean.title || 'A note', date: clean.date, content: clean.content || 'Some words worth keeping.' });
+    }
   }
 
   if (type === 'future') {
-    state.future.push({
-      id: crypto.randomUUID(),
-      title: clean.title,
-      category: data.category || 'dreams',
-      date: clean.date,
-      description: clean.description || 'A little dream to keep growing.'
-    });
+    if (id) {
+      const item = state.future.find((entry) => entry.id === id);
+      if (item) Object.assign(item, { ...item, title: clean.title, category: data.category || item.category, date: clean.date, description: clean.description || item.description });
+    } else {
+      state.future.push({ id: crypto.randomUUID(), title: clean.title, category: data.category || 'dreams', date: clean.date, description: clean.description || 'A little dream to keep growing.' });
+    }
+  }
+
+  if (type === 'diary') {
+    if (id) {
+      const item = state.diary.find((entry) => entry.id === id);
+      if (item) Object.assign(item, { ...item, title: clean.title, date: clean.date, entry: clean.entry || item.entry });
+    } else {
+      state.diary.push({ id: crypto.randomUUID(), title: clean.title, date: clean.date, entry: clean.entry || 'A family moment worth remembering.' });
+    }
+  }
+
+  if (type === 'pregnancy') {
+    if (id) {
+      const item = state.pregnancy.find((entry) => entry.id === id);
+      if (item) Object.assign(item, { ...item, title: clean.title, date: clean.date, description: clean.description || item.description });
+    } else {
+      state.pregnancy.push({ id: crypto.randomUUID(), title: clean.title, date: clean.date, description: clean.description || 'A hopeful update while we wait for them.' });
+    }
+  }
+
+  if (type === 'letter') {
+    if (id) {
+      const item = state.letters.find((entry) => entry.id === id);
+      if (item) Object.assign(item, { ...item, title: clean.title, date: clean.date, content: clean.content || item.content });
+    } else {
+      state.letters.push({ id: crypto.randomUUID(), title: clean.title, date: clean.date, content: clean.content || 'A little note for our boys.' });
+    }
+  }
+
+  if (type === 'timeline') {
+    if (id) {
+      const item = state.timeline.find((entry) => entry.id === id);
+      if (item) Object.assign(item, { ...item, title: clean.title, date: clean.date, eventType: clean.eventType, familyMember: clean.familyMember, description: clean.description || item.description });
+    } else {
+      state.timeline.push({ id: crypto.randomUUID(), title: clean.title, date: clean.date, description: clean.description || 'A meaningful family moment.', eventType: clean.eventType, familyMember: clean.familyMember });
+    }
+  }
+
+  if (type === 'story') {
+    if (id) {
+      const item = state.story.find((entry) => entry.id === id);
+      if (item) Object.assign(item, { ...item, title: clean.title, date: clean.date, summary: clean.summary || item.summary });
+    } else {
+      state.story.push({ id: crypto.randomUUID(), title: clean.title, date: clean.date, summary: clean.summary || 'A chapter we are still writing.' });
+      state.timeline.push({ id: crypto.randomUUID(), title: clean.title, date: clean.date, description: clean.summary || 'A chapter we are still writing.', eventType: 'relationship', familyMember: 'both' });
+    }
   }
 
   if (type === 'experience') {
     const status = data.status || 'want';
-    state.experiences[status] = state.experiences[status] || [];
-    state.experiences[status].push({
-      id: crypto.randomUUID(),
-      title: clean.title,
-      date: clean.date,
-      description: clean.description || 'A memory in the making.'
-    });
+    const list = state.experiences[status] || [];
+    if (id) {
+      const match = list.find((entry) => entry.id === id);
+      if (match) Object.assign(match, { ...match, title: clean.title, date: clean.date, description: clean.description || match.description });
+    } else {
+      list.push({ id: crypto.randomUUID(), title: clean.title, date: clean.date, description: clean.description || 'A memory in the making.' });
+      state.experiences[status] = list;
+    }
   }
 
   if (type === 'milestone') {
-    state.milestones.push({
-      id: crypto.randomUUID(),
-      title: clean.title,
-      date: clean.date,
-      description: clean.description || 'A moment to remember.'
-    });
+    if (id) {
+      const item = state.milestones.find((entry) => entry.id === id);
+      if (item) Object.assign(item, { ...item, title: clean.title, date: clean.date, description: clean.description || item.description });
+    } else {
+      state.milestones.push({ id: crypto.randomUUID(), title: clean.title, date: clean.date, description: clean.description || 'A moment to remember.' });
+    }
   }
 
-  if (type === 'story') {
-    state.story.push({
-      id: crypto.randomUUID(),
-      title: clean.title,
-      date: clean.date,
-      summary: clean.description || 'A chapter we are still writing.'
-    });
-    state.timeline.push({
-      id: crypto.randomUUID(),
-      title: clean.title,
-      date: clean.date,
-      description: clean.description || 'A chapter we are still writing.'
-    });
+  saveState();
+  renderAll();
+}
+
+function deleteEntry(type, id) {
+  if (!window.confirm('Delete this entry? This action cannot be undone.')) return;
+
+  if (type === 'memory') state.memories = state.memories.filter((item) => item.id !== id);
+  if (type === 'note') state.notes = state.notes.filter((item) => item.id !== id);
+  if (type === 'future') state.future = state.future.filter((item) => item.id !== id);
+  if (type === 'diary') state.diary = state.diary.filter((item) => item.id !== id);
+  if (type === 'pregnancy') state.pregnancy = state.pregnancy.filter((item) => item.id !== id);
+  if (type === 'letter') state.letters = state.letters.filter((item) => item.id !== id);
+  if (type === 'timeline') state.timeline = state.timeline.filter((item) => item.id !== id);
+  if (type === 'story') state.story = state.story.filter((item) => item.id !== id);
+  if (type === 'gallery') state.gallery = state.gallery.filter((item) => item.id !== id);
+  if (type === 'voiceNote') state.voiceNotes = state.voiceNotes.filter((item) => item.id !== id);
+  if (type === 'milestone') state.milestones = state.milestones.filter((item) => item.id !== id);
+
+  if (type === 'experience') {
+    for (const key of Object.keys(state.experiences)) {
+      state.experiences[key] = (state.experiences[key] || []).filter((item) => item.id !== id);
+    }
   }
 
   saveState();

@@ -216,6 +216,7 @@
             <h2>Family Timeline</h2>
             <p class="page-subtitle">Important dates, celebrations and tiny everyday moments worth keeping.</p>
           </header>
+          <div id="timeline-toolbar" class="list-toolbar"></div>
           <div id="timeline-list" class="story-timeline"></div>
         </section>
 
@@ -231,6 +232,9 @@
             <button class="filter-btn" data-filter="family" type="button">Family</button>
             <button class="filter-btn" data-filter="adventures" type="button">Adventures</button>
           </div>
+          <div class="list-toolbar add-bar">
+            <button class="btn-primary" data-action="add-memory" type="button">Add memory</button>
+          </div>
           <div id="memories-grid" class="memories-grid"></div>
         </section>
 
@@ -239,6 +243,9 @@
             <h2>Photo Gallery</h2>
             <p class="page-subtitle">Our favourite moments, captured and remembered.</p>
           </header>
+          <div class="list-toolbar add-bar">
+            <button class="btn-primary" type="button">Add photo</button>
+          </div>
           <div id="gallery-grid" class="gallery-grid"></div>
         </section>
 
@@ -247,6 +254,9 @@
             <h2>Voice Notes</h2>
             <p class="page-subtitle">Recorded memories for our future selves.</p>
           </header>
+          <div class="list-toolbar add-bar">
+            <button class="btn-primary" type="button">Record note</button>
+          </div>
           <div id="voice-notes-list" class="voice-notes-list"></div>
         </section>
 
@@ -255,6 +265,9 @@
             <h2>Family Diary</h2>
             <p class="page-subtitle">Daily updates, reminders, little moments and everyday life.</p>
           </header>
+          <div class="list-toolbar add-bar">
+            <button class="btn-primary" data-action="add-diary" type="button">Add diary entry</button>
+          </div>
           <div id="diary-list" class="diary-list"></div>
         </section>
 
@@ -263,6 +276,9 @@
             <h2>Pregnancy Journey</h2>
             <p class="page-subtitle">Our preparations, scans and hopeful waiting for Jack and Max.</p>
           </header>
+          <div class="list-toolbar add-bar">
+            <button class="btn-primary" data-action="add-pregnancy" type="button">Add pregnancy update</button>
+          </div>
           <div id="pregnancy-journey" class="pregnancy-list"></div>
         </section>
 
@@ -271,6 +287,9 @@
             <h2>Letters to Jack &amp; Max</h2>
             <p class="page-subtitle">Words we want them to know about love, family and home.</p>
           </header>
+          <div class="list-toolbar add-bar">
+            <button class="btn-primary" data-action="add-letter" type="button">Write a letter</button>
+          </div>
           <div id="letters-list" class="letters-list"></div>
         </section>
 
@@ -299,6 +318,9 @@
             <button class="category-btn" data-category="dreams" type="button">Dreams</button>
             <button class="category-btn" data-category="home" type="button">Home</button>
           </div>
+          <div class="list-toolbar add-bar">
+            <button class="btn-primary" data-action="add-dream" type="button">Add dream</button>
+          </div>
           <div id="future-list" class="future-list"></div>
         </section>
 
@@ -307,6 +329,9 @@
             <h2>Daily Inspiration</h2>
             <p class="page-subtitle">Gentle thoughts to keep us rooted in love and gratitude.</p>
           </header>
+          <div class="list-toolbar add-bar">
+            <button class="btn-primary" id="add-custom-inspiration" type="button">Add my own</button>
+          </div>
           <div id="inspiration-list" class="inspiration-list"></div>
         </section>
 
@@ -315,6 +340,9 @@
             <h2>Family Milestones</h2>
             <p class="page-subtitle">The moments that matter.</p>
           </header>
+          <div class="list-toolbar add-bar">
+            <button class="btn-primary" data-action="add-milestone" type="button">Add milestone</button>
+          </div>
           <div id="milestones-list" class="milestones-list"></div>
         </section>
 
@@ -346,6 +374,11 @@
             <button class="btn-secondary" id="export-data" type="button">Export Our Data</button>
             <button class="btn-secondary" id="import-data" type="button">Import Data</button>
             <input type="file" id="import-file" accept=".json" hidden />
+          </div>
+
+          <div class="settings-section">
+            <h3>Shared family sync</h3>
+            <div id="backend-status" class="backend-status" aria-live="polite"></div>
           </div>
 
           <div class="settings-section">

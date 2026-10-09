@@ -422,8 +422,7 @@ button {
 .voice-card h3,
 .diary-card h3,
 .pregnancy-card h3,
-.letter-card h3,
-.inspiration-card p {
+.letter-card h3 {
   margin: 0 0 8px;
   font-size: 1.15rem;
 }
@@ -639,6 +638,79 @@ button {
   background: rgba(217, 127, 134, 0.12);
   color: var(--primary);
   font-weight: 700;
+}
+
+.list-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.filter-select {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--muted);
+}
+
+.filter-select select {
+  border: none;
+  background: transparent;
+  color: var(--text);
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(125, 150, 160, 0.12);
+  color: var(--text);
+}
+
+.pill.subtle {
+  background: rgba(216, 176, 111, 0.12);
+}
+
+.entry-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.small-btn {
+  padding: 8px 12px;
+  font-size: 0.85rem;
+}
+
+.backend-status {
+  display: grid;
+  gap: 12px;
+}
+
+.backend-status-box {
+  padding: 16px 18px;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.backend-status-box.offline {
+  border-color: rgba(198, 94, 94, 0.22);
+  background: rgba(198, 94, 94, 0.06);
+}
+
+.backend-status-box.ready {
+  border-color: rgba(126, 157, 143, 0.32);
+  background: rgba(126, 157, 143, 0.08);
 }
 
 .install-banner {
