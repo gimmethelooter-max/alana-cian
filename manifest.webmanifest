@@ -2,18 +2,89 @@
   "name": "Alana & Cian Family Memory Book",
   "short_name": "A&C",
   "description": "Private memories, notes, dreams, and milestones for our family.",
-  "start_url": ".",
-  "scope": ".",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#f8f4ee",
   "theme_color": "#f8f4ee",
-  "orientation": "portrait",
+  "orientation": "portrait-primary",
+  "launch_handler": {
+    "client_mode": ["auto", "navigate-new"]
+  },
+  "screenshots": [
+    {
+      "src": "icons/screenshot-540.png",
+      "sizes": "540x720",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "icons/screenshot-1280.png",
+      "sizes": "1280x800",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
   "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-192-maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
     {
       "src": "icons/icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
     }
-  ]
+  ],
+  "categories": ["lifestyle", "productivity"],
+  "shortcuts": [
+    {
+      "name": "Add Memory",
+      "short_name": "Memory",
+      "description": "Add a new family memory",
+      "url": "./?page=memories",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Diary Entry",
+      "short_name": "Diary",
+      "description": "Add a family diary entry",
+      "url": "./?page=diary",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "prefer_related_applications": false
 }
